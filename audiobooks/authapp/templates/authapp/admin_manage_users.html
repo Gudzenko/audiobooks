@@ -1,0 +1,15 @@
+{% extends 'authapp/base.html' %}
+
+{% block title %}Admin Manage Users{% endblock %}
+
+{% block content %}
+<h2>All Users</h2>
+<ul class="list-group">
+    {% for user in users %}
+    <li class="list-group-item">
+        {{ user.username }} - {{ user.email }}
+        <a class="btn btn-primary btn-sm float-end">Edit</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

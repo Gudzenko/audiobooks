@@ -1,0 +1,16 @@
+{% extends 'authapp/base.html' %}
+
+{% block title %}Manage Users{% endblock %}
+
+{% block content %}
+<h2>Users assigned to you</h2>
+<ul class="list-group">
+    {% for user in users %}
+    <li class="list-group-item">
+        {{ user.username }} - {{ user.email }}
+    </li>
+    {% empty %}
+    <li class="list-group-item">No users assigned</li>
+    {% endfor %}
+</ul>
+{% endblock %}

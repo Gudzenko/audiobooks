@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: ./audiobooks
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./audiobooks:/app
+    ports:
+      - "8000:8000"
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      DEBUG: "True"
+      ALLOWED_HOSTS: "localhost,127.0.0.1"
