@@ -1,0 +1,26 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ book.title }}</h1>
+
+    <h3>Авторы:</h3>
+    <ul>
+        {% for author in authors %}
+            <li><a href="{% url 'author_detail' author.slug %}">{{ author.first_name }} {{ author.last_name }}</a></li>
+        {% endfor %}
+    </ul>
+
+    {% if series %}
+        <h3>Серия:</h3>
+        <p><a href="{% url 'series_detail' series.slug %}">{{ series.title }}</a></p>
+    {% endif %}
+
+    <h3>Жанры:</h3>
+    <ul>
+        {% for genre in genres %}
+            <li><a href="{% url 'genre_detail' genre.slug %}">{{ genre.name }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

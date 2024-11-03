@@ -1,0 +1,10 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<h1 class="mb-4">Список авторов</h1>
+<ul class="list-group">
+    {% for author in authors %}
+        <li class="list-group-item">{{ author.first_name }} {{ author.last_name }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

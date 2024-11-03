@@ -1,0 +1,10 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<h1 class="mb-4">Список жанров</h1>
+<ul class="list-group">
+    {% for genre in genres %}
+        <li class="list-group-item">{{ genre.name }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
