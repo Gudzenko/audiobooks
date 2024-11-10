@@ -62,6 +62,7 @@ class Book(models.Model):
     is_read = models.BooleanField(default=False, verbose_name="Is read")
 
     def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
         if self.title:
             author_slugs = "_".join([custom_slugify(author.slug) for author in self.authors.all()]) \
                 if self.authors.exists() else "no_author"
