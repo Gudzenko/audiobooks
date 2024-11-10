@@ -5,7 +5,15 @@
 {% block content %}
 <div class="container">
     <h1 class="mb-4">{{ title }}</h1>
-    {% pagination page_obj %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <form method="get" action="" class="search-form me-3">
+            <div class="input-group">
+                <input type="text" name="query" value="{{ query }}" class="form-control" placeholder="Поиск...">
+                <button class="btn btn-pagination" type="submit">Поиск</button>
+            </div>
+        </form>
+        {% pagination page_obj query %}
+    </div>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-4">
         {% for item in page_obj %}
             <div class="col">
@@ -20,6 +28,6 @@
             </div>
         {% endfor %}
     </div>
-    {% pagination page_obj %}
+    {% pagination page_obj query %}
 </div>
 {% endblock %}

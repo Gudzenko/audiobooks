@@ -22,7 +22,11 @@ class PaginatedListView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        query = self.request.GET.get('query', '')
         item_list = self.get_items()
+        if query:
+            item_list = [item for item in item_list if query.lower() in item['label'].lower()]
 
         paginator = Paginator(item_list, self.paginate_by)
         page_number = self.request.GET.get('page')
@@ -31,6 +35,7 @@ class PaginatedListView(LoginRequiredMixin, TemplateView):
         context['title'] = self.title
         context['title_url'] = self.title_url
         context['page_obj'] = page_obj
+        context['query'] = query
         return context
 
 
