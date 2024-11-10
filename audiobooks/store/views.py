@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, TemplateView, DetailView
+from django.core.paginator import Paginator
+from django.views.generic import TemplateView, DetailView
 from .models import Book, Author, Series, Genre
 
 
@@ -7,80 +8,94 @@ class HomeView(TemplateView):
     template_name = 'store/home.html'
 
 
-class BookListView(LoginRequiredMixin, TemplateView):
+class PaginatedListView(LoginRequiredMixin, TemplateView):
     template_name = 'store/tile_list.html'
     login_url = 'login'
+    paginate_by = 18
+    model = None
+    image = ''
+    title = ''
+    title_url = ''
+
+    def get_items(self):
+        return []
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['items'] = [
+        item_list = self.get_items()
+
+        paginator = Paginator(item_list, self.paginate_by)
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        context['title'] = self.title
+        context['title_url'] = self.title_url
+        context['page_obj'] = page_obj
+        return context
+
+
+class BookListView(PaginatedListView):
+    title = 'Книги'
+    title_url = 'book'
+    image = 'store/images/default_book.png'
+
+    def get_items(self):
+        return [
             {
-                'image': 'store/images/default_book.png',
+                'image': self.image,
                 'label': book.title,
                 'slug': book.slug,
             }
             for book in Book.objects.all()
         ]
-        context['title'] = 'Книги'
-        context['title_url'] = 'book'
-        return context
 
 
-class AuthorListView(LoginRequiredMixin, TemplateView):
-    template_name = 'store/tile_list.html'
-    login_url = 'login'
+class AuthorListView(PaginatedListView):
+    title = 'Авторы'
+    title_url = 'author'
+    image = 'store/images/default_author.png'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['items'] = [
+    def get_items(self):
+        return [
             {
-                'image': 'store/images/default_author.png',
+                'image': self.image,
                 'label': f"{author.first_name} {author.last_name}",
                 'slug': author.slug,
             }
             for author in Author.objects.all()
         ]
-        context['title'] = 'Авторы'
-        context['title_url'] = 'author'
-        return context
 
 
-class SeriesListView(LoginRequiredMixin, TemplateView):
-    template_name = 'store/tile_list.html'
-    login_url = 'login'
+class SeriesListView(PaginatedListView):
+    title = 'Серии'
+    title_url = 'series'
+    image = 'store/images/default_series.png'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['items'] = [
+    def get_items(self):
+        return [
             {
-                'image': 'store/images/default_series.png',
+                'image': self.image,
                 'label': series.title,
                 'slug': series.slug,
             }
             for series in Series.objects.all()
         ]
-        context['title'] = 'Серии'
-        context['title_url'] = 'series'
-        return context
 
 
-class GenreListView(LoginRequiredMixin, TemplateView):
-    template_name = 'store/tile_list.html'
-    login_url = 'login'
+class GenreListView(PaginatedListView):
+    title = 'Жанры'
+    title_url = 'genre'
+    image = 'store/images/default_genre.png'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['items'] = [
+    def get_items(self):
+        return [
             {
-                'image': 'store/images/default_genre.png',
+                'image': self.image,
                 'label': genre.name,
                 'slug': genre.slug,
             }
             for genre in Genre.objects.all()
         ]
-        context['title'] = 'Жанры'
-        context['title_url'] = 'genre'
-        return context
 
 
 class BookDetailView(LoginRequiredMixin, DetailView):
