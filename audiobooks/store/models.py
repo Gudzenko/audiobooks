@@ -2,7 +2,8 @@ import logging
 from django.db import models
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
-from .utils import custom_slugify
+from .utils import custom_slugify, delete_old_image, genre_image_upload_path, author_image_upload_path, \
+    series_image_upload_path
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -12,11 +13,13 @@ logger = logging.getLogger('Model')
 class Genre(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=120, unique=True, blank=True, editable=False)
+    image = models.ImageField(upload_to=genre_image_upload_path, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         self.slug = custom_slugify(self.name) if self.name else ""
         if not self.slug:
             return
+        delete_old_image(self)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -28,11 +31,13 @@ class Author(models.Model):
     last_name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     slug = models.SlugField(max_length=120, unique=True, blank=True, editable=False)
+    image = models.ImageField(upload_to=author_image_upload_path, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         self.slug = custom_slugify(f"{self.last_name} {self.first_name}") if self.last_name and self.first_name else ""
         if not self.slug:
             return
+        delete_old_image(self)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -42,11 +47,13 @@ class Author(models.Model):
 class Series(models.Model):
     title = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=120, unique=True, blank=True, editable=False)
+    image = models.ImageField(upload_to=series_image_upload_path, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         self.slug = custom_slugify(self.title) if self.title else ""
         if not self.slug:
             return
+        delete_old_image(self)
         super().save(*args, **kwargs)
 
     def __str__(self):

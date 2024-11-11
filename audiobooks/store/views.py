@@ -1,7 +1,13 @@
+import logging
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
+from django.templatetags.static import static
 from django.views.generic import TemplateView, DetailView
 from .models import Book, Author, Series, Genre
+
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger('Views')
 
 
 class HomeView(TemplateView):
@@ -42,7 +48,7 @@ class PaginatedListView(LoginRequiredMixin, TemplateView):
 class BookListView(PaginatedListView):
     title = 'Книги'
     title_url = 'book'
-    image = 'store/images/default_book.png'
+    image = static('store/images/default_book.png')
 
     def get_items(self):
         return [
@@ -58,12 +64,12 @@ class BookListView(PaginatedListView):
 class AuthorListView(PaginatedListView):
     title = 'Авторы'
     title_url = 'author'
-    image = 'store/images/default_author.png'
+    image = static('store/images/default_author.png')
 
     def get_items(self):
         return [
             {
-                'image': self.image,
+                'image': author.image.url if author.image else self.image,
                 'label': f"{author.first_name} {author.last_name}",
                 'slug': author.slug,
             }
@@ -74,12 +80,12 @@ class AuthorListView(PaginatedListView):
 class SeriesListView(PaginatedListView):
     title = 'Серии'
     title_url = 'series'
-    image = 'store/images/default_series.png'
+    image = static('store/images/default_series.png')
 
     def get_items(self):
         return [
             {
-                'image': self.image,
+                'image': series.image.url if series.image else self.image,
                 'label': series.title,
                 'slug': series.slug,
             }
@@ -90,12 +96,12 @@ class SeriesListView(PaginatedListView):
 class GenreListView(PaginatedListView):
     title = 'Жанры'
     title_url = 'genre'
-    image = 'store/images/default_genre.png'
+    image = static('store/images/default_genre.png')
 
     def get_items(self):
         return [
             {
-                'image': self.image,
+                'image': genre.image.url if genre.image else self.image,
                 'label': genre.name,
                 'slug': genre.slug,
             }

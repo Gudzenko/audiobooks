@@ -4,7 +4,9 @@
 {% block content %}
 <div class="container">
     <div class="mb-4 text-center">
-        <img src="{% static 'store/images/default_author.png' %}" alt="Default Author Image" class="img-fluid rounded" style="width: 250px; height: 250px; object-fit: cover;">
+        <img src="{% if author.image %}{{ author.image.url }}{% else %}{% static 'store/images/default_author.png' %}{% endif %}"
+             alt="{{ author.first_name }} {{ author.last_name }}"
+             class="custom-card-img-details img-fluid rounded">
         <h1>{{ author.first_name }} {{ author.last_name }}</h1>
     </div>
     <p>{{ author.description }}</p>

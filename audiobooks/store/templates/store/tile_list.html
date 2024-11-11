@@ -19,9 +19,9 @@
             <div class="col">
                 <a href="{% url title_url|lower|add:'_detail' item.slug %}" class="text-decoration-none">
                     <div class="card h-100">
-                        <img src="{% static item.image %}" class="card-img-top" alt="Image">
+                        <img src="{{ item.image }}" class="custom-card-img-top" alt="Image">
                         <div class="card-body text-center">
-                            <h5 class="card-title">{{ item.label }}</h5>
+                            <h6 class="card-title">{{ item.label }}</h6>
                         </div>
                     </div>
                 </a>
