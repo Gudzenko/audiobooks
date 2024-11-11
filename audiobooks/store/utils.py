@@ -27,6 +27,11 @@ def series_image_upload_path(instance, filename):
     return f"media/series/{instance.slug}{extension}"
 
 
+def book_image_upload_path(instance, filename):
+    extension = os.path.splitext(filename)[1]
+    return f"media/books/{instance.slug}{extension}"
+
+
 def delete_old_image(instance, field_name='image'):
     if instance.pk:
         old_instance = instance.__class__.objects.get(pk=instance.pk)

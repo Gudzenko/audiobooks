@@ -53,7 +53,7 @@ class BookListView(PaginatedListView):
     def get_items(self):
         return [
             {
-                'image': self.image,
+                'image': book.image.url if book.image else self.image,
                 'label': book.title,
                 'slug': book.slug,
             }

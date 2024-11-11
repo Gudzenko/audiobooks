@@ -9,7 +9,7 @@
             <div class="col">
                 <a href="{% url 'book_detail' book.slug %}" class="text-decoration-none">
                     <div class="card h-100">
-                        <img src="{% static 'store/images/default_book.png' %}" class="card-img-top" alt="Image">
+                        <img src="{% if book.image %}{{ book.image.url }}{% else %}{% static 'store/images/default_book.png' %}{% endif %}" class="card-img-top" alt="Image">
                         <div class="card-body text-center">
                             <h5 class="card-title">{{ book.title }}</h5>
                         </div>

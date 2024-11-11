@@ -1,8 +1,14 @@
 {% extends 'store/base.html' %}
+{% load static %}
 
 {% block content %}
 <div class="container">
-    <h1>{{ book.title }}</h1>
+    <div class="mb-4 text-center">
+        <img src="{% if book.image %}{{ book.image.url }}{% endif %}"
+             alt="{{ books.title}}"
+             class="custom-card-img-details img-fluid rounded">
+        <h1>{{ book.title }}</h1>
+    </div>
 
     <h3>Авторы:</h3>
     <ul>

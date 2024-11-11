@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 from .utils import custom_slugify, delete_old_image, genre_image_upload_path, author_image_upload_path, \
-    series_image_upload_path
+    series_image_upload_path, book_image_upload_path
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -67,6 +67,7 @@ class Book(models.Model):
     series = models.ForeignKey(Series, on_delete=models.SET_NULL, null=True, blank=True, related_name='books')
     slug = models.SlugField(max_length=200, unique=True, blank=True, editable=False)
     is_read = models.BooleanField(default=False, verbose_name="Is read")
+    image = models.ImageField(upload_to=book_image_upload_path, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -75,6 +76,7 @@ class Book(models.Model):
                 if self.authors.exists() else "no_author"
             series_slug = self.series.slug if self.series else "no_series"
             self.slug = custom_slugify(f"{author_slugs}_{series_slug}_{self.title}")
+            delete_old_image(self)
             super().save(*args, **kwargs)
 
     def __str__(self):

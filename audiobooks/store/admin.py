@@ -35,7 +35,11 @@ class SeriesAdmin(admin.ModelAdmin):
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ('title', 'slug', 'series', 'is_read')
+    list_display = ('title', 'slug', 'series', 'is_read', 'image_preview')
     search_fields = ('title',)
     filter_horizontal = ('authors', 'genres')
     list_filter = ('is_read',)
+
+    def image_preview(self, obj):
+        return get_image_preview(obj, 'image')
+    image_preview.short_description = 'Image'
