@@ -32,6 +32,14 @@ def book_image_upload_path(instance, filename):
     return f"media/books/{instance.slug}{extension}"
 
 
+def audio_file_upload_path(instance, filename):
+    author_slugs = "_".join([custom_slugify(author.slug) for author in instance.book.authors.all()]) \
+        if instance.book.authors.exists() else "no_author"
+    series_slug = instance.book.series.slug if instance.book.series else "no_series"
+    book_slug = instance.book.slug
+    return f"audio/{author_slugs}/{series_slug}/{book_slug}/{filename}"
+
+
 def delete_old_image(instance, field_name='image'):
     if instance.pk:
         old_instance = instance.__class__.objects.get(pk=instance.pk)

@@ -1,9 +1,11 @@
 import logging
+import os
+import shutil
 from django.db import models
-from django.db.models.signals import m2m_changed
+from django.db.models.signals import m2m_changed, pre_delete
 from django.dispatch import receiver
 from .utils import custom_slugify, delete_old_image, genre_image_upload_path, author_image_upload_path, \
-    series_image_upload_path, book_image_upload_path
+    series_image_upload_path, book_image_upload_path, audio_file_upload_path
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -79,6 +81,15 @@ class Book(models.Model):
             delete_old_image(self)
             super().save(*args, **kwargs)
 
+    def move_to_new_path(self):
+        old_path = self.file.path
+        new_path = audio_file_upload_path(self, os.path.basename(old_path))
+        if old_path != new_path:
+            os.makedirs(os.path.dirname(new_path), exist_ok=True)
+            shutil.move(old_path, new_path)
+            self.file.name = new_path.replace('media/', '')
+            self.save()
+
     def __str__(self):
         return self.title
 
@@ -90,3 +101,33 @@ def update_book_slug(sender, instance, action, **kwargs):
         series_slug = custom_slugify(instance.series.title) if instance.series else "no_series"
         instance.slug = custom_slugify(f"{author_slugs}_{series_slug}_{instance.title}")
         instance.save()
+
+    for audio_file in instance.audio_files.all():
+        audio_file.move_to_new_path()
+
+
+class AudioFile(models.Model):
+    book = models.ForeignKey(Book, related_name="audio_files", on_delete=models.CASCADE)
+    file = models.FileField(upload_to=audio_file_upload_path)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            old_file = AudioFile.objects.get(pk=self.pk).file
+            if old_file and old_file != self.file:
+                old_file.delete(save=False)
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.file:
+            self.file.delete(save=False)
+        super().delete(*args, **kwargs)
+
+    def __str__(self):
+        return os.path.basename(self.file.name)
+
+
+@receiver(pre_delete, sender=AudioFile)
+def delete_file_on_instance_delete(sender, instance, **kwargs):
+    if instance.file:
+        instance.file.delete(save=False)
