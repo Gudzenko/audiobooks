@@ -1,9 +1,19 @@
 {% extends 'store/base.html' %}
+{% load pagination_tags %}
 {% load static %}
 
 {% block content %}
 <div class="container">
     <h3>Книги в жанре "{{ genre.name }}":</h3>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <form method="get" action="" class="search-form me-3">
+            <div class="input-group">
+                <input type="text" name="query" value="{{ query }}" class="form-control" placeholder="Поиск...">
+                <button class="btn btn-pagination" type="submit">Поиск</button>
+            </div>
+        </form>
+        {% pagination page_obj query %}
+    </div>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-4">
         {% for book in books %}
             <div class="col">
@@ -17,6 +27,9 @@
                 </a>
             </div>
         {% endfor %}
+    </div>
+    <div class="d-flex justify-content-center mt-4">
+        {% pagination page_obj query %}
     </div>
 </div>
 {% endblock %}

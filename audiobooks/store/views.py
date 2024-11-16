@@ -152,8 +152,21 @@ class GenreDetailView(LoginRequiredMixin, DetailView):
     template_name = 'store/genre_detail.html'
     context_object_name = 'genre'
     login_url = 'login'
+    paginate_by = 18
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['books'] = Book.objects.filter(genres=self.object)
+        query = self.request.GET.get('query', '')
+        books = Book.objects.filter(genres=self.object)
+        book_list = books
+        if query:
+            book_list = [book for book in books if query.lower() in book.title.lower()]
+
+        paginator = Paginator(book_list, self.paginate_by)
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        context['books'] = page_obj
+        context['page_obj'] = page_obj
+        context['query'] = query
         return context
