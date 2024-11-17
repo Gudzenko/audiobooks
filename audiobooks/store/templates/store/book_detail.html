@@ -1,5 +1,6 @@
 {% extends 'store/base.html' %}
 {% load static %}
+{% load file_tags %}
 
 {% block content %}
 <div class="container">
@@ -10,23 +11,76 @@
         <h1>{{ book.title }}</h1>
     </div>
 
-    <h3>Авторы:</h3>
-    <ul>
-        {% for author in authors %}
-            <li><a href="{% url 'author_detail' author.slug %}">{{ author.first_name }} {{ author.last_name }}</a></li>
-        {% endfor %}
-    </ul>
-
-    {% if series %}
-        <h3>Серия:</h3>
-        <p><a href="{% url 'series_detail' series.slug %}">{{ series.title }}</a></p>
+    {% if authors %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0">Авторы</h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    {% for author in authors %}
+                        <li class="mb-2">
+                            <a href="{% url 'author_detail' author.slug %}" class="text-decoration-none">
+                                {{ author.first_name }} {{ author.last_name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
     {% endif %}
 
-    <h3>Жанры:</h3>
-    <ul>
-        {% for genre in genres %}
-            <li><a href="{% url 'genre_detail' genre.slug %}">{{ genre.name }}</a></li>
-        {% endfor %}
-    </ul>
+    {% if series %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0">Серия</h3>
+            </div>
+            <div class="card-body">
+                <p class="mb-0">
+                    <a href="{% url 'series_detail' series.slug %}" class="text-decoration-none">
+                        {{ series.title }}
+                    </a>
+                </p>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if genres %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0">Жанры</h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    {% for genre in genres %}
+                        <li class="mb-2">
+                            <a href="{% url 'genre_detail' genre.slug %}" class="text-decoration-none">
+                                {{ genre.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if audio_files %}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3>Аудиофайлы:</h3>
+            <a href="{% url 'download_all_audio' book.slug %}" class="btn btn-secondary btn-sm">Скачать все</a>
+        </div>
+        <div class="list-group">
+            {% for audio in audio_files %}
+                <div class="list-group-item d-flex justify-content-between align-items-center audio-item">
+                    <audio controls class="audio-control">
+                        <source src="{{ audio.file.url }}" type="audio/mpeg">
+                        Ваш браузер не поддерживает аудиоплеер.
+                    </audio>
+                    <span class="audio-title">{{ audio.file.name|basename }}</span>
+                    <a href="{{ audio.file.url }}" class="btn btn-secondary btn-sm" download>Скачать</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

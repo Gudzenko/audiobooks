@@ -1,8 +1,13 @@
 import logging
+import os
+import zipfile
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.templatetags.static import static
 from django.views.generic import TemplateView, DetailView
+from django.views import View
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from .models import Book, Author, Series, Genre
 
 
@@ -120,6 +125,7 @@ class BookDetailView(LoginRequiredMixin, DetailView):
         context['authors'] = self.object.authors.all()
         context['series'] = self.object.series
         context['genres'] = self.object.genres.all()
+        context['audio_files'] = self.object.audio_files.all().order_by('file')
         return context
 
 
@@ -170,3 +176,22 @@ class GenreDetailView(LoginRequiredMixin, DetailView):
         context['page_obj'] = page_obj
         context['query'] = query
         return context
+
+
+class DownloadAllAudioView(LoginRequiredMixin, View):
+    login_url = 'login'
+
+    def get(self, request, slug, *args, **kwargs):
+        book = get_object_or_404(Book, slug=slug)
+        audio_files = book.audio_files.all()
+
+        response = HttpResponse(content_type='application/zip')
+        zip_filename = f"{slug}.zip"
+        response['Content-Disposition'] = f'attachment; filename="{zip_filename}"'
+
+        with zipfile.ZipFile(response, 'w') as zip_file:
+            for audio in audio_files:
+                file_path = audio.file.path
+                file_name = os.path.basename(file_path)
+                zip_file.write(file_path, arcname=file_name)
+        return response
