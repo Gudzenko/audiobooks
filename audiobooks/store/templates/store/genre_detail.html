@@ -5,6 +5,9 @@
 {% block content %}
 <div class="container">
     <h3>Книги в жанре "{{ genre.name }}":</h3>
+    {% if user.is_superuser %}
+        <a href="{% url 'book_add_genre' genre.slug %}" class="btn btn-secondary btn-sm mt-1 mb-1">Добавить новую книгу</a>
+    {% endif %}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <form method="get" action="" class="search-form me-3">
             <div class="input-group">

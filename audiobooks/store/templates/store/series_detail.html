@@ -4,6 +4,9 @@
 {% block content %}
 <div class="container">
     <h3>Книги в серии "{{ series.title }}":</h3>
+    {% if user.is_superuser %}
+        <a href="{% url 'book_add_series' series.slug %}" class="btn btn-secondary btn-sm mt-1 mb-1">Добавить новую книгу</a>
+    {% endif %}
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-4">
         {% for book in books %}
             <div class="col">

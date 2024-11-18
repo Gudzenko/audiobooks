@@ -111,3 +111,16 @@
     text-decoration: underline;
     color: #0056b3;
 }
+
+.edit-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.item-container {
+    position: relative;
+}

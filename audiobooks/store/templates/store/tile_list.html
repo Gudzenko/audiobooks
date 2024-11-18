@@ -13,10 +13,11 @@
             </div>
         </form>
         {% pagination page_obj query %}
+        <a href="{% url title_url|lower|add:'_add' %}" class="btn btn-secondary btn-sm">{{ add_item_name }}</a>
     </div>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-4">
         {% for item in page_obj %}
-            <div class="col">
+            <div class="item-container col">
                 <a href="{% url title_url|lower|add:'_detail' item.slug %}" class="text-decoration-none">
                     <div class="card h-100">
                         <img src="{{ item.image }}" class="custom-card-img-top" alt="Image">
@@ -25,6 +26,11 @@
                         </div>
                     </div>
                 </a>
+                {% if user.is_superuser %}
+                    <a href="{% url title_url|lower|add:'_edit' item.slug %}" class="edit-icon pt-4 pr-1">
+                        <img src="{% static 'store/images/edit-icon.jpg' %}" alt="Edit" width="30" height="30">
+                    </a>
+                {% endif %}
             </div>
         {% endfor %}
     </div>
