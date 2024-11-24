@@ -1,0 +1,95 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-secondary text-white text-center">
+            <h2 class="mb-0">
+                {% if object %}
+                    Редактировать {{ object|capfirst }}
+                {% else %}
+                    Добавить {{ model_name|capfirst }}
+                {% endif %}
+            </h2>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for field in form %}
+                     {% if field.name in form.image_fields %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            <div class="upload-container text-center border rounded p-3" id="drop-zone-{{ field.name }}">
+                                <input type="file" name="{{ field.name }}" id="{{ field.id_for_label }}"
+                                       class="form-control d-none" accept="image/*">
+                                <input type="hidden" name="clear_image" id="clear-input-{{ field.name }}" value="false">
+                                <div id="preview-{{ field.name }}" style="height: 100%;">
+                                    {% if object and field.value %}
+                                        <img src="{{ field.value.url }}" alt="Current Image"
+                                             class="img-fluid" style="height: 100%;">
+                                    {% else %}
+                                        <span class="text-muted">Перетащите фото сюда или нажмите для выбора</span>
+                                    {% endif %}
+                                </div>
+                                <button type="button" class="btn btn-danger btn-sm mt-2 d-none" id="clear-{{ field.name }}">
+                                    Очистить
+                                </button>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <div class="form-text">{{ field.help_text }}</div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <div class="d-flex justify-content-between">
+                    <a href="{% url redirect_url %}" class="btn btn-secondary">Отмена</a>
+                    {% if object %}
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            Удалить
+                        </button>
+                    {% endif %}
+                    <button type="submit" class="btn btn-secondary">
+                        {% if object %}Сохранить изменения{% else %}Добавить{% endif %}
+                    </button>
+                </div>
+            </form>
+
+            {% if object %}
+                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title" id="deleteModalLabel">Подтверждение удаления</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                            </div>
+                            <div class="modal-body">
+                                Вы уверены, что хотите удалить {{ model_name }} <strong>{{ object }}</strong>? Это действие нельзя отменить.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <form method="post" action="{% url delete_url object.slug %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Удалить</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'store/js/form_image_preview.js' %}"></script>
+    <script id="image-fields-data">
+        {{ image_fields_json|safe }}
+    </script>
+{% endblock %}

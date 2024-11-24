@@ -21,6 +21,8 @@ class BookForm(forms.ModelForm):
 
 
 class AuthorForm(forms.ModelForm):
+    image_fields = ['image']
+
     class Meta:
         model = Author
         fields = ['first_name', 'last_name', 'description', 'image']
@@ -30,9 +32,18 @@ class AuthorForm(forms.ModelForm):
             'description': 'Описание',
             'image': 'Фото автора',
         }
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите имя'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите фамилию'}),
+            'description': forms.Textarea(
+                attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Введите описание'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
 
 
 class GenreForm(forms.ModelForm):
+    image_fields = ['image']
+
     class Meta:
         model = Genre
         fields = ['name', 'image']
@@ -40,13 +51,23 @@ class GenreForm(forms.ModelForm):
             'name': 'Название жанра',
             'image': 'Фото жанра',
         }
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите название жанра'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
 
 
 class SeriesForm(forms.ModelForm):
+    image_fields = ['image']
+
     class Meta:
         model = Series
         fields = ['title', 'image']
         labels = {
             'title': 'Название серии',
             'image': 'Фото серии',
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите название серии'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }

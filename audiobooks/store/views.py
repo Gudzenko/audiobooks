@@ -1,7 +1,9 @@
 import logging
 import os
 import zipfile
-from django.views.generic.edit import FormView
+import json
+
+from django.views.generic.edit import FormView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator
 from django.contrib import messages
@@ -11,6 +13,7 @@ from django.views import View
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
+from django.utils.safestring import mark_safe
 from .forms import BookForm, AuthorForm, SeriesForm, GenreForm
 from .models import Book, Author, Series, Genre, AudioFile
 
@@ -207,6 +210,59 @@ class DownloadAllAudioView(LoginRequiredMixin, View):
         return response
 
 
+class GenericCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView):
+    model = None
+    form_class = None
+    success_url = None
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
+    template_name = 'store/form_template.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get_object(self):
+        slug = self.kwargs.get('slug')
+        return get_object_or_404(self.model, slug=slug) if slug else None
+
+    def get_initial(self):
+        initial = super().get_initial()
+        obj = self.get_object()
+        if obj:
+            for field in self.form_class.Meta.fields:
+                initial[field] = getattr(obj, field, None)
+        return initial
+
+    def form_valid(self, form):
+        obj = self.get_object()
+        if self.request.POST.get('clear_image') == 'true' and obj and obj.image:
+            obj.image.delete(save=False)
+            obj.image = None
+
+        if obj:
+            form = self.form_class(self.request.POST, self.request.FILES, instance=obj)
+        else:
+            form = self.form_class(self.request.POST, self.request.FILES)
+
+        if form.is_valid():
+            form.save()
+            messages.success(self.request, f'{self.model._meta.verbose_name.capitalize()} успешно сохранён!')
+            return redirect(self.success_url)
+
+        messages.error(self.request, f'Ошибка при сохранении {self.model._meta.verbose_name}.')
+        return self.form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object'] = self.get_object()
+        context['model_name'] = self.model._meta.verbose_name
+        context['redirect_url'] = self.success_url
+        if context['object']:
+            context['delete_url'] = f"{self.model._meta.model_name}_delete"
+        context['image_fields_json'] = mark_safe(json.dumps(self.form_class.image_fields))
+        return context
+
+
 class BookCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView):
     template_name = 'store/book_form.html'
     form_class = BookForm
@@ -258,128 +314,50 @@ class BookCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView):
         return context
 
 
-class AuthorCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView):
-    template_name = 'store/author_form.html'
+class AuthorCreateOrEditView(GenericCreateOrEditView):
+    model = Author
     form_class = AuthorForm
+    success_url = 'author_list'
+
+
+class SeriesCreateOrEditView(GenericCreateOrEditView):
+    model = Series
+    form_class = SeriesForm
+    success_url = 'series_list'
+
+
+class GenreCreateOrEditView(GenericCreateOrEditView):
+    model = Genre
+    form_class = GenreForm
+    success_url = 'genre_list'
+
+
+class GenericDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = None
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
+    success_url = 'home'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['model_name'] = self.model._meta.verbose_name
+        context['redirect_url'] = self.success_url
+        return context
+
+
+class AuthorDeleteView(GenericDeleteView):
+    model = Author
     success_url = reverse_lazy('author_list')
 
-    def test_func(self):
-        return self.request.user.is_superuser
 
-    def get_object(self):
-        slug = self.kwargs.get('slug')
-        return get_object_or_404(Author, slug=slug) if slug else None
-
-    def get_initial(self):
-        initial = super().get_initial()
-        obj = self.get_object()
-        if obj:
-            initial['first_name'] = obj.first_name
-            initial['last_name'] = obj.last_name
-            initial['description'] = obj.description
-            initial['image'] = obj.image
-        return initial
-
-    def form_valid(self, form):
-        obj = self.get_object()
-        if obj:
-            form = AuthorForm(self.request.POST, self.request.FILES, instance=obj)
-        else:
-            form = AuthorForm(self.request.POST, self.request.FILES)
-
-        if form.is_valid():
-            form.save()
-            messages.success(self.request, 'Автор успешно сохранён!')
-            return redirect(self.success_url)
-
-        messages.error(self.request, 'Ошибка при сохранении автора.')
-        return self.form_invalid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['object'] = self.get_object()
-        return context
-
-
-class SeriesCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView):
-    template_name = 'store/series_form.html'
-    form_class = SeriesForm
+class SeriesDeleteView(GenericDeleteView):
+    model = Series
     success_url = reverse_lazy('series_list')
 
-    def test_func(self):
-        return self.request.user.is_superuser
 
-    def get_object(self):
-        slug = self.kwargs.get('slug')
-        return get_object_or_404(Series, slug=slug) if slug else None
-
-    def get_initial(self):
-        initial = super().get_initial()
-        obj = self.get_object()
-        if obj:
-            initial['title'] = obj.title
-            initial['image'] = obj.image
-        return initial
-
-    def form_valid(self, form):
-        obj = self.get_object()
-        if obj:
-            form = SeriesForm(self.request.POST, self.request.FILES, instance=obj)
-        else:
-            form = SeriesForm(self.request.POST, self.request.FILES)
-
-        if form.is_valid():
-            form.save()
-            messages.success(self.request, 'Серия успешно сохранена!')
-            return redirect(self.success_url)
-
-        messages.error(self.request, 'Ошибка при сохранении серии.')
-        return self.form_invalid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['object'] = self.get_object()
-        return context
-
-
-class GenreCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView):
-    template_name = 'store/genre_form.html'
-    form_class = GenreForm
+class GenreDeleteView(GenericDeleteView):
+    model = Genre
     success_url = reverse_lazy('genre_list')
-
-    def test_func(self):
-        return self.request.user.is_superuser
-
-    def get_object(self):
-        slug = self.kwargs.get('slug')
-        return get_object_or_404(Genre, slug=slug) if slug else None
-
-    def get_initial(self):
-        initial = super().get_initial()
-        obj = self.get_object()
-        if obj:
-            initial['name'] = obj.name
-            initial['image'] = obj.image
-        return initial
-
-    def form_valid(self, form):
-        obj = self.get_object()
-        if obj:
-            form = GenreForm(self.request.POST, self.request.FILES, instance=obj)
-        else:
-            form = GenreForm(self.request.POST, self.request.FILES)
-
-        if form.is_valid():
-            form.save()
-            messages.success(self.request, 'Жанр успешно сохранён!')
-            return redirect(self.success_url)
-
-        messages.error(self.request, 'Ошибка при сохранении жанра.')
-        return self.form_invalid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['object'] = self.get_object()
-        return context
-
-

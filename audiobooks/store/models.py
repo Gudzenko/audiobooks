@@ -13,7 +13,7 @@ logger = logging.getLogger('Model')
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=120, unique=True, blank=True, editable=False)
     image = models.ImageField(upload_to=genre_image_upload_path, blank=True, null=True)
 
@@ -23,6 +23,11 @@ class Genre(models.Model):
             return
         delete_old_image(self)
         super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.image and os.path.isfile(self.image.path):
+            os.remove(self.image.path)
+        super().delete(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -42,12 +47,17 @@ class Author(models.Model):
         delete_old_image(self)
         super().save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        if self.image and os.path.isfile(self.image.path):
+            os.remove(self.image.path)
+        super().delete(*args, **kwargs)
+
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
 
 class Series(models.Model):
-    title = models.CharField(max_length=200, unique=True)
+    title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=120, unique=True, blank=True, editable=False)
     image = models.ImageField(upload_to=series_image_upload_path, blank=True, null=True)
 
@@ -57,6 +67,11 @@ class Series(models.Model):
             return
         delete_old_image(self)
         super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.image and os.path.isfile(self.image.path):
+            os.remove(self.image.path)
+        super().delete(*args, **kwargs)
 
     def __str__(self):
         return self.title

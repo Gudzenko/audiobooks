@@ -103,13 +103,8 @@
     font-weight: bold;
 }
 
-.card-body a {
-    color: #007bff;
-}
-
 .card-body a:hover {
     text-decoration: underline;
-    color: #0056b3;
 }
 
 .edit-icon {
