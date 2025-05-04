@@ -82,5 +82,16 @@
             {% endfor %}
         </div>
     {% endif %}
+    <div class="text-center mt-5">
+        <form method="post"
+              action="{% url 'book_delete' slug=book.slug %}"
+              onsubmit="return confirm('Вы уверены, что хотите удалить эту книгу?')"
+              class="d-inline-block">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">
+                Удалить книгу
+            </button>
+        </form>
+    </div>
 </div>
 {% endblock %}

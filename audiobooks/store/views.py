@@ -361,3 +361,23 @@ class SeriesDeleteView(GenericDeleteView):
 class GenreDeleteView(GenericDeleteView):
     model = Genre
     success_url = reverse_lazy('genre_list')
+
+
+class BookDeleteView(GenericDeleteView):
+    model = Book
+    success_url = reverse_lazy("book_list")
+
+    def form_valid(self, form):
+        book = self.get_object()
+
+        if book.image:
+            if os.path.isfile(book.image.path):
+                os.remove(book.image.path)
+
+        audio_files = AudioFile.objects.filter(book=book)
+        for audio in audio_files:
+            if audio.file and os.path.isfile(audio.file.path):
+                os.remove(audio.file.path)
+            audio.delete()
+
+        return super().form_valid(form)

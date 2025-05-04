@@ -8,6 +8,7 @@ urlpatterns = [
     path('book/<slug:slug>/download-all/', views.DownloadAllAudioView.as_view(), name='download_all_audio'),
     path('book/add/', views.BookCreateOrEditView.as_view(), name='book_add'),
     path('book/<slug:slug>/edit/', views.BookCreateOrEditView.as_view(), name='book_edit'),
+    path('book/<slug:slug>/delete/', views.BookDeleteView.as_view(), name='book_delete'),
     path('book/add/genre/<slug:genre_slug>/', views.BookCreateOrEditView.as_view(), name='book_add_genre'),
     path('book/add/author/<slug:author_slug>/', views.BookCreateOrEditView.as_view(), name='book_add_author'),
     path('book/add/series/<slug:series_slug>/', views.BookCreateOrEditView.as_view(), name='book_add_series'),
