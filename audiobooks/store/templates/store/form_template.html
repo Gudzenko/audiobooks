@@ -20,14 +20,13 @@
                      {% if field.name in form.image_fields %}
                         <div class="mb-3">
                             <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                            <div class="upload-container text-center border rounded p-3" id="drop-zone-{{ field.name }}">
+                            <div class="upload-container text-center border rounded p-3 d-flex flex-column align-items-center" id="drop-zone-{{ field.name }}">
                                 <input type="file" name="{{ field.name }}" id="{{ field.id_for_label }}"
                                        class="form-control d-none" accept="image/*">
                                 <input type="hidden" name="clear_image" id="clear-input-{{ field.name }}" value="false">
-                                <div id="preview-{{ field.name }}" style="height: 100%;">
+                                <div id="preview-{{ field.name }}" class="d-flex justify-content-center align-items-center preview-image-container">
                                     {% if object and field.value %}
-                                        <img src="{{ field.value.url }}" alt="Current Image"
-                                             class="img-fluid" style="height: 100%;">
+                                        <img src="{{ field.value.url }}" alt="Current Image" class="img-fluid rounded preview">
                                     {% else %}
                                         <span class="text-muted">Перетащите фото сюда или нажмите для выбора</span>
                                     {% endif %}

@@ -1,121 +1,135 @@
 .btn-pagination {
-    background-color: #BBC9C9;
-    color: #000;
-    border: none;
+  background-color: #bbc9c9;
+  color: #000;
+  border: none;
 }
 
-.btn-pagination:focus, .btn-pagination:active {
-    outline: none;
-    box-shadow: none;
+.btn-pagination:focus,
+.btn-pagination:active {
+  outline: none;
+  box-shadow: none;
 }
 
 .pagination .page-link {
-    color: #000;
-    border-color: #000;
+  color: #000;
+  border-color: #000;
 }
 
-.pagination .page-link:focus, .pagination .page-link:active {
-    outline: none;
-    box-shadow: none;
+.pagination .page-link:focus,
+.pagination .page-link:active {
+  outline: none;
+  box-shadow: none;
 }
 
 .selected-btn {
-    background-color: #BBC9C9 !important;
+  background-color: #bbc9c9 !important;
 }
 
 .search-form {
-    flex: 0 0 50%;
+  flex: 0 0 50%;
 }
 
 .input-group .form-control {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 
 .input-group .form-control:focus {
-    outline: none;
-    box-shadow: none;
-    border-color: #BBC9C9;
+  outline: none;
+  box-shadow: none;
+  border-color: #bbc9c9;
 }
 
 .d-flex.align-items-center.mb-4 {
-    min-height: 80px;
+  min-height: 80px;
 }
 
 .navbar-custom {
-    background-color: #BBC9C9;
-    font-size: 1.3em;
+  background-color: #bbc9c9;
+  font-size: 1.3em;
 }
 
 .custom-card-img-top {
-    width: auto;
-    height: 210px;
-    object-fit: contain;
-    object-position: center;
+  width: auto;
+  height: 210px;
+  object-fit: contain;
+  object-position: center;
 }
 
 .custom-card-img-details {
-    width: auto;
-    height: 250px;
-    object-fit: contain;
-    object-position: center;
+  width: auto;
+  height: 250px;
+  object-fit: contain;
+  object-position: center;
 }
 
 .audio-item {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    background-color: #f9f9f9;
-    display: flex;
-    align-items: center;
-    gap: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background-color: #f9f9f9;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .audio-control {
-    flex: 1;
-    max-width: 600px;
-    width: 600px;
+  flex: 1;
+  max-width: 600px;
+  width: 600px;
 }
 
 .audio-title {
-    margin-left: auto;
-    text-align: right;
-    font-weight: 500;
-    font-size: 16px;
-    color: #333;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  margin-left: auto;
+  text-align: right;
+  font-weight: 500;
+  font-size: 16px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .btn {
-    font-size: 14px;
-    padding: 8px 12px;
+  font-size: 14px;
+  padding: 8px 12px;
 }
 
 .card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .card-header {
-    background-color: #f8f9fa;
-    font-weight: bold;
+  background-color: #f8f9fa;
+  font-weight: bold;
 }
 
 .card-body a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .edit-icon {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
-    text-align: center;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-align: center;
 }
 
 .item-container {
-    position: relative;
+  position: relative;
+}
+
+.preview-image-container {
+  max-height: 600px;
+  max-width: 300px;
+  overflow: hidden;
+}
+
+.preview-image {
+  max-height: 600px;
+  max-width: 300px;
+  object-fit: contain;
 }

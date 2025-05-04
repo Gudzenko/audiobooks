@@ -230,7 +230,9 @@ class GenericCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView)
         obj = self.get_object()
         if obj:
             for field in self.form_class.Meta.fields:
-                initial[field] = getattr(obj, field, None)
+                value = getattr(obj, field, None)
+                model_field = self.model._meta.get_field(field)
+                initial[field] = value.all() if model_field.many_to_many else value
         return initial
 
     def form_valid(self, form):
@@ -263,55 +265,10 @@ class GenericCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView)
         return context
 
 
-class BookCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView):
-    template_name = 'store/book_form.html'
+class BookCreateOrEditView(GenericCreateOrEditView):
+    model = Book
     form_class = BookForm
-
-    def test_func(self):
-        return self.request.user.is_superuser
-
-    def get_object(self):
-        slug = self.kwargs.get('slug')
-        return get_object_or_404(Book, slug=slug) if slug else None
-
-    def get_initial(self):
-        initial = super().get_initial()
-        genre_slug = self.kwargs.get('genre_slug')
-        author_slug = self.kwargs.get('author_slug')
-        series_slug = self.kwargs.get('series_slug')
-
-        if genre_slug:
-            genre = get_object_or_404(Genre, slug=genre_slug)
-            initial['genres'] = [genre]
-        if author_slug:
-            author = get_object_or_404(Author, slug=author_slug)
-            initial['authors'] = [author]
-        if series_slug:
-            series = get_object_or_404(Series, slug=series_slug)
-            initial['series'] = series
-
-        return initial
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['instance'] = self.get_object()
-        return kwargs
-
-    def form_valid(self, form):
-        book = form.save()
-
-        files = self.request.FILES.getlist('audio_files')
-        for file in files:
-            AudioFile.objects.create(book=book, file=file)
-
-        messages.success(self.request, 'Книга успешно сохранена!')
-        return redirect('book_detail', slug=book.slug)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['book'] = self.get_object()
-        context['previous_page'] = self.request.GET.get('next', reverse('home'))
-        return context
+    success_url = 'book_list'
 
 
 class AuthorCreateOrEditView(GenericCreateOrEditView):

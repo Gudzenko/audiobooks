@@ -3,13 +3,11 @@ from .models import Book, Author, Genre, Series
 
 
 class BookForm(forms.ModelForm):
+    image_fields = ['image']
+
     class Meta:
         model = Book
         fields = ['title', 'authors', 'genres', 'series', 'is_read', 'image']
-        widgets = {
-            'authors': forms.CheckboxSelectMultiple,
-            'genres': forms.CheckboxSelectMultiple,
-        }
         labels = {
             'title': 'Название книги',
             'authors': 'Авторы',
@@ -17,6 +15,14 @@ class BookForm(forms.ModelForm):
             'series': 'Серия',
             'is_read': 'Прочитано',
             'image': 'Обложка книги',
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите название книги'}),
+            'authors': forms.CheckboxSelectMultiple(),
+            'genres': forms.CheckboxSelectMultiple(),
+            'series': forms.Select(attrs={'class': 'form-select'}),
+            'is_read': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
 
 

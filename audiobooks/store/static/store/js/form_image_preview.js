@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const element = document.getElementById("image-fields-data");
-  if (element === null) return;
-  const imageFields = JSON.parse(element.textContent);
+  const imageFields = JSON.parse(
+    document.getElementById("image-fields-data").textContent
+  );
   imageFields.forEach((fieldName) => {
     const dropZone = document.getElementById(`drop-zone-${fieldName}`);
     const fileInput = document.getElementById(`id_${fieldName}`);
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (file && file.type.startsWith("image/")) {
           const reader = new FileReader();
           reader.onload = (e) => {
-            preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="height: 100%;">`;
+            preview.innerHTML = `<img src="${e.target.result}" alt="Preview" class="img-fluid rounded preview-image">`;
           };
           reader.readAsDataURL(file);
           document.getElementById(`clear-input-${fieldName}`).value = "true";
