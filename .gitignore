@@ -162,3 +162,4 @@ cython_debug/
 #.idea/
 
 audiobooks/media/
+audiobooks/prodstaticfiles/
