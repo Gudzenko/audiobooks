@@ -5,9 +5,11 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - ./audiobooks:/app
+      - /media/pi/ADATA_HM900/media:/app/media
     ports:
       - "8000:8000"
     environment:
       SECRET_KEY: ${SECRET_KEY}
       DEBUG: "True"
-      ALLOWED_HOSTS: "localhost,127.0.0.1,192.168.8.104"
+      ALLOWED_HOSTS: "localhost,127.0.0.1,192.168.34.6,192.168.34.2"
+      CSRF_TRUSTED_ORIGINS: "http://192.168.34.6,http://192.168.34.2"

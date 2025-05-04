@@ -1,10 +1,13 @@
 # audiobooks
 
+Add file .env
+Add dir static in audiobooks 
+
 Run dev:
-docker-compose -f docker-compose.dev.yaml up --build
+docker compose -f docker-compose.dev.yaml up --build
 
 Run prod:
-docker-compose -f docker-compose.prod.yaml up --build
+docker compose -f docker-compose.prod.yaml up --build
 
 Create super user
 cd audiobooks

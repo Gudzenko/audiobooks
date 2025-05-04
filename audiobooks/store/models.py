@@ -123,7 +123,7 @@ def update_book_slug(sender, instance, action, **kwargs):
 
 class AudioFile(models.Model):
     book = models.ForeignKey(Book, related_name="audio_files", on_delete=models.CASCADE)
-    file = models.FileField(upload_to=audio_file_upload_path)
+    file = models.FileField(upload_to=audio_file_upload_path, max_length=400)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
