@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 {% load static %}
-<html lang="en">
+{% load i18n %}
+{% get_available_languages as LANGUAGES %}
+{% get_current_language as LANGUAGE_CODE %}
+
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,19 +24,37 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'book_list' %}">Книги</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'author_list' %}">Авторы</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'series_list' %}">Серии</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'genre_list' %}">Жанры</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'book_list' %}">{% trans "Books" %}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'author_list' %}">{% trans "Authors" %}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'series_list' %}">{% trans "Series" %}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'genre_list' %}">{% trans "Genres" %}</a></li>
                 </ul>
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
-                        <li class="nav-item"><span class="nav-link">Привет, {{ user.username }}</span></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Выйти</a></li>
+                        <li class="nav-item"><span class="nav-link">{% trans "Hello" %}, {{ user.username }}</span></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">{% trans "Logout" %}</a></li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Войти</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Зарегистрироваться</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">{% trans "Login" %}</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">{% trans "Register" %}</a></li>
                     {% endif %}
+                    <li class="nav-item dropdown ms-3">
+                        <a class="nav-link fw-bold dropdown-toggle language-dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ LANGUAGE_CODE|upper }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                            {% for code, name in LANGUAGES %}
+                                <li>
+                                    <form action="{% url 'set_language' %}" method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="language" value="{{ code }}">
+                                        <button class="dropdown-item {% if LANGUAGE_CODE == code %}active fw-bold{% endif %}" type="submit">
+                                            {{ name }}
+                                        </button>
+                                    </form>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </nav>

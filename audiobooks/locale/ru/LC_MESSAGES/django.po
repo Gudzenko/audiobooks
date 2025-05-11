@@ -1,0 +1,199 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Oleksandr Gudzenko <shurman_g@mail.ru>, 2025
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-05-10 13:00+0000\n"
+"PO-Revision-Date: 2025-05-10 13:10+0000\n"
+"Last-Translator: Oleksandr Gudzenko\n"
+"Language-Team: Russian\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+
+#: audiobooks/settings.py
+msgid "English"
+msgstr "Английский"
+
+msgid "Russian"
+msgstr "Русский"
+
+msgid "Polish"
+msgstr "Польский"
+
+#: store/views.py
+msgid "Add new author"
+msgstr "Добавить автора"
+
+msgid "Add new series"
+msgstr "Добавить серию"
+
+msgid "Add new genre"
+msgstr "Добавить жанр"
+
+msgid "Save success"
+msgstr "успешно сохранён"
+
+msgid "Save with error"
+msgstr "Ошибка при сохранении"
+
+#: store/forms.py
+msgid "Book title"
+msgstr "Название книги"
+
+msgid "Authors"
+msgstr "Авторы"
+
+msgid "Book genres"
+msgstr "Жанры"
+
+msgid "Book series"
+msgstr "Серия"
+
+msgid "Book is read"
+msgstr "Прочитано"
+
+msgid "Book image"
+msgstr "Обложка книги"
+
+msgid "Book placeholder title"
+msgstr "Введите название книги"
+
+msgid "Author firstname"
+msgstr "Имя"
+
+msgid "Author lastname"
+msgstr "Фамилия"
+
+msgid "Author description"
+msgstr "Описание"
+
+msgid "Author image"
+msgstr "Фото автора"
+
+msgid "Author placeholder firstname"
+msgstr "Введите имя"
+
+msgid "Author placeholder lastname"
+msgstr "Введите фамилию"
+
+msgid "Author placeholder description"
+msgstr "Введите описание"
+
+msgid "Genre name"
+msgstr "Название жанра"
+
+msgid "Genre image"
+msgstr "Фото жанра"
+
+msgid "Genre placeholder name"
+msgstr "Введите название жанра"
+
+msgid "Series name"
+msgstr "Название серии"
+
+msgid "Series image"
+msgstr "Фото серии"
+
+msgid "Series placeholder name"
+msgstr "Введите название серии"
+
+#: store/templates/store/base.html
+msgid "Books"
+msgstr "Книги"
+
+msgid "Series"
+msgstr "Серии"
+
+msgid "Genres"
+msgstr "Жанры"
+
+msgid "Hello"
+msgstr "Привет"
+
+msgid "Logout"
+msgstr "Выйти"
+
+msgid "Login"
+msgstr "Войти"
+
+msgid "Register"
+msgstr "Зарегистрироваться"
+
+#: store/template/store/
+msgid "Add new book"
+msgstr "Добавить новую книгу"
+
+msgid "Search"
+msgstr "Поиск"
+
+#: store/templates/store/author_detail.html
+msgid "Author books"
+msgstr "Книги автора"
+
+#: store/templates/store/book_detail.html
+msgid "Book audiofiles"
+msgstr "Аудиофайлы"
+
+msgid "Book download all"
+msgstr "Скачать все"
+
+msgid "Book not support audio"
+msgstr "Ваш браузер не поддерживает аудиоплеер"
+
+msgid "Book download"
+msgstr "Скачать"
+
+msgid "Book remove"
+msgstr "Удалить книгу"
+
+msgid "Book confirm remove message"
+msgstr "Вы уверены, что хотите удалить эту книгу?"
+
+#: store/templates/store/form_template.html
+msgid "Form edit"
+msgstr "Редактировать"
+
+msgid "Form add"
+msgstr "Добавить"
+
+msgid "Form add image"
+msgstr "Перетащите фото сюда или нажмите для выбора"
+
+msgid "Form clear image"
+msgstr "Очистить"
+
+msgid "Form cancel"
+msgstr "Отмена"
+
+msgid "Form remove"
+msgstr "Удалить"
+
+msgid "Form save"
+msgstr "Сохранить изменения"
+
+msgid "Form confirm remove"
+msgstr "Подтверждение удаления"
+
+msgid "Form confirm remove question"
+msgstr "Вы уверены, что хотите удалить"
+
+msgid "Form confirm remove message"
+msgstr "Это действие нельзя отменить"
+
+msgid "Form invalid format"
+msgstr "Неверный формат файла"
+
+#: store/templates/store/home.html
+msgid "Home welcome"
+msgstr "Добро пожаловать в наш книжный магазин!"
+
+msgid "Home welcome find"
+msgstr "Здесь вы найдете книги, авторов, жанры и серии."

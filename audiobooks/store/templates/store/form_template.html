@@ -1,5 +1,6 @@
 {% extends 'store/base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
 <div class="container mt-5">
@@ -7,9 +8,9 @@
         <div class="card-header bg-secondary text-white text-center">
             <h2 class="mb-0">
                 {% if object %}
-                    Редактировать {{ object|capfirst }}
+                    {% trans "Form edit" %} {{ object|capfirst }}
                 {% else %}
-                    Добавить {{ model_name|capfirst }}
+                    {% trans "Form add" %} {{ model_name|capfirst }}
                 {% endif %}
             </h2>
         </div>
@@ -28,11 +29,12 @@
                                     {% if object and field.value %}
                                         <img src="{{ field.value.url }}" alt="Current Image" class="img-fluid rounded preview">
                                     {% else %}
-                                        <span class="text-muted">Перетащите фото сюда или нажмите для выбора</span>
+                                        <span class="text-muted">
+                                            {% trans "Form add image" %}</span>
                                     {% endif %}
                                 </div>
                                 <button type="button" class="btn btn-danger btn-sm mt-2 d-none" id="clear-{{ field.name }}">
-                                    Очистить
+                                    {% trans "Form clear image" %}
                                 </button>
                             </div>
                         </div>
@@ -47,14 +49,14 @@
                     {% endif %}
                 {% endfor %}
                 <div class="d-flex justify-content-between">
-                    <a href="{% url redirect_url %}" class="btn btn-secondary">Отмена</a>
+                    <a href="{% url redirect_url %}" class="btn btn-secondary">{% trans "Form cancel" %}</a>
                     {% if object %}
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                            Удалить
+                            {% trans "Form remove" %}
                         </button>
                     {% endif %}
                     <button type="submit" class="btn btn-secondary">
-                        {% if object %}Сохранить изменения{% else %}Добавить{% endif %}
+                        {% if object %}{% trans "Form save" %}{% else %}{% trans "Form add" %}{% endif %}
                     </button>
                 </div>
             </form>
@@ -64,17 +66,17 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header bg-danger text-white">
-                                <h5 class="modal-title" id="deleteModalLabel">Подтверждение удаления</h5>
+                                <h5 class="modal-title" id="deleteModalLabel">{% trans "Form confirm remove" %}</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                             </div>
                             <div class="modal-body">
-                                Вы уверены, что хотите удалить {{ model_name }} <strong>{{ object }}</strong>? Это действие нельзя отменить.
+                                {% trans "Form confirm remove question" %} {{ model_name }} <strong>{{ object }}</strong>? {% trans "Form confirm remove message" %}
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Form cancel" %}</button>
                                 <form method="post" action="{% url delete_url object.slug %}">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger">Удалить</button>
+                                    <button type="submit" class="btn btn-danger">{% trans "Form remove" %}</button>
                                 </form>
                             </div>
                         </div>
@@ -88,7 +90,13 @@
 
 {% block scripts %}
     <script src="{% static 'store/js/form_image_preview.js' %}"></script>
-    <script id="image-fields-data">
+    <script id="image-fields-data" type="application/json">
         {{ image_fields_json|safe }}
+    </script>
+    <script id="i18n-js" type="application/json">
+        {
+            "upload_hint": "{% trans 'Form add image' %}",
+            "invalid_file": "{% trans 'Form invalid format' %}"
+        }
     </script>
 {% endblock %}

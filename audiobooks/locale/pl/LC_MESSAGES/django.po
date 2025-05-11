@@ -1,0 +1,200 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Oleksandr Gudzenko <shurman_g@mail.ru>, 2025
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-05-10 13:00+0000\n"
+"PO-Revision-Date: 2025-05-10 13:10+0000\n"
+"Last-Translator: Oleksandr Gudzenko\n"
+"Language-Team: Polish\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+
+#: audiobooks/settings.py
+msgid "English"
+msgstr "Angielski"
+
+msgid "Russian"
+msgstr "Rosyjski"
+
+msgid "Polish"
+msgstr "Polski"
+
+#: store/views.py
+msgid "Add new author"
+msgstr "Dodaj nowego autora"
+
+msgid "Add new series"
+msgstr "Dodaj nową serię"
+
+msgid "Add new genre"
+msgstr "Dodaj nowy gatunek"
+
+msgid "Save success"
+msgstr "Pomyślnie zapisano"
+
+msgid "Save with error"
+msgstr "Błąd podczas zapisu"
+
+#: store/forms.py
+msgid "Book title"
+msgstr "Tytuł książki"
+
+msgid "Authors"
+msgstr "Autorzy"
+
+msgid "Book genres"
+msgstr "Gatunki"
+
+msgid "Book series"
+msgstr "Seria"
+
+msgid "Book is read"
+msgstr "Przeczytana"
+
+msgid "Book image"
+msgstr "Okładka książki"
+
+msgid "Book placeholder title"
+msgstr "Wpisz tytuł książki"
+
+msgid "Author firstname"
+msgstr "Imię"
+
+msgid "Author lastname"
+msgstr "Nazwisko"
+
+msgid "Author description"
+msgstr "Opis"
+
+msgid "Author image"
+msgstr "Zdjęcie autora"
+
+msgid "Author placeholder firstname"
+msgstr "Wpisz imię"
+
+msgid "Author placeholder lastname"
+msgstr "Wpisz nazwisko"
+
+msgid "Author placeholder description"
+msgstr "Wpisz opis"
+
+msgid "Genre name"
+msgstr "Nazwa gatunku"
+
+msgid "Genre image"
+msgstr "Zdjęcie gatunku"
+
+msgid "Genre placeholder name"
+msgstr "Wpisz nazwę gatunku"
+
+msgid "Series name"
+msgstr "Nazwa serii"
+
+msgid "Series image"
+msgstr "Zdjęcie serii"
+
+msgid "Series placeholder name"
+msgstr "Wpisz nazwę serii"
+
+#: store/templates/store/base.html
+msgid "Books"
+msgstr "Książki"
+
+msgid "Series"
+msgstr "Serie"
+
+msgid "Genres"
+msgstr "Gatunki"
+
+msgid "Hello"
+msgstr "Cześć"
+
+msgid "Logout"
+msgstr "Wyloguj się"
+
+msgid "Login"
+msgstr "Zaloguj się"
+
+msgid "Register"
+msgstr "Zarejestruj się"
+
+#: store/template/store/
+msgid "Add new book"
+msgstr "Dodaj nową książkę"
+
+msgid "Search"
+msgstr "Szukaj"
+
+#: store/templates/store/author_detail.html
+msgid "Author books"
+msgstr "Książki autora"
+
+#: store/templates/store/book_detail.html
+msgid "Book audiofiles"
+msgstr "Pliki audio"
+
+msgid "Book download all"
+msgstr "Pobierz wszystkie"
+
+msgid "Book not support audio"
+msgstr "Twoja przeglądarka nie obsługuje odtwarzacza audio"
+
+msgid "Book download"
+msgstr "Pobierz"
+
+msgid "Book remove"
+msgstr "Usuń książkę"
+
+msgid "Book confirm remove message"
+msgstr "Czy na pewno chcesz usunąć tę książkę?"
+
+#: store/templates/store/form_template.html
+msgid "Form edit"
+msgstr "Edytuj"
+
+msgid "Form add"
+msgstr "Dodaj"
+
+msgid "Form add image"
+msgstr "Przeciągnij zdjęcie tutaj lub kliknij, aby wybrać"
+
+msgid "Form clear image"
+msgstr "Wyczyść"
+
+msgid "Form cancel"
+msgstr "Anuluj"
+
+msgid "Form remove"
+msgstr "Usuń"
+
+msgid "Form save"
+msgstr "Zapisz zmiany"
+
+msgid "Form confirm remove"
+msgstr "Potwierdzenie usunięcia"
+
+msgid "Form confirm remove question"
+msgstr "Czy na pewno chcesz usunąć"
+
+msgid "Form confirm remove message"
+msgstr "Tej operacji nie można cofnąć"
+
+msgid "Form invalid format"
+msgstr "Nieprawidłowy format pliku"
+
+#: store/templates/store/home.html
+msgid "Home welcome"
+msgstr "Witamy w naszej księgarni!"
+
+msgid "Home welcome find"
+msgstr "Tutaj znajdziesz książki, autorów, gatunki i serie."
+

@@ -14,6 +14,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 from .forms import BookForm, AuthorForm, SeriesForm, GenreForm
 from .models import Book, Author, Series, Genre, AudioFile
 
@@ -60,10 +61,10 @@ class PaginatedListView(LoginRequiredMixin, TemplateView):
 
 
 class BookListView(PaginatedListView):
-    title = 'Книги'
+    title = _('Books')
     title_url = 'book'
     image = static('store/images/default_book.png')
-    add_item_name = 'Добавить книгу'
+    add_item_name = _('Add new book')
 
     def get_items(self):
         return [
@@ -77,10 +78,10 @@ class BookListView(PaginatedListView):
 
 
 class AuthorListView(PaginatedListView):
-    title = 'Авторы'
+    title = _('Authors')
     title_url = 'author'
     image = static('store/images/default_author.png')
-    add_item_name = 'Добавить автора'
+    add_item_name = _('Add new author')
 
     def get_items(self):
         return [
@@ -94,10 +95,10 @@ class AuthorListView(PaginatedListView):
 
 
 class SeriesListView(PaginatedListView):
-    title = 'Серии'
+    title = _('Series')
     title_url = 'series'
     image = static('store/images/default_series.png')
-    add_item_name = 'Добавить серию'
+    add_item_name = _('Add new series')
 
     def get_items(self):
         return [
@@ -111,10 +112,10 @@ class SeriesListView(PaginatedListView):
 
 
 class GenreListView(PaginatedListView):
-    title = 'Жанры'
+    title = _('Genres')
     title_url = 'genre'
     image = static('store/images/default_genre.png')
-    add_item_name = 'Добавить жанр'
+    add_item_name = _('Add new genre')
 
     def get_items(self):
         return [
@@ -248,10 +249,10 @@ class GenericCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView)
 
         if form.is_valid():
             form.save()
-            messages.success(self.request, f'{self.model._meta.verbose_name.capitalize()} успешно сохранён!')
+            messages.success(self.request, f'{self.model._meta.verbose_name.capitalize()} {_("Save success")}!')
             return redirect(self.success_url)
 
-        messages.error(self.request, f'Ошибка при сохранении {self.model._meta.verbose_name}.')
+        messages.error(self.request, f'{_("Save with error")} {self.model._meta.verbose_name}.')
         return self.form_invalid(form)
 
     def get_context_data(self, **kwargs):

@@ -1,6 +1,7 @@
 {% extends 'store/base.html' %}
+{% load i18n %}
 
 {% block content %}
-<h1 class="mb-4">Добро пожаловать в наш книжный магазин!</h1>
-<p>Здесь вы найдете книги, авторов, жанры и серии.</p>
+<h1 class="mb-4">{% trans "Home welcome" %}</h1>
+<p>{% trans "Home welcome find" %}</p>
 {% endblock %}

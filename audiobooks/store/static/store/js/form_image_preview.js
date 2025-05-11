@@ -2,6 +2,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const imageFields = JSON.parse(
     document.getElementById("image-fields-data").textContent
   );
+  const i18n = JSON.parse(document.getElementById("i18n-js").textContent);
+  const uploadHint = i18n.upload_hint;
+  const invalidFile = i18n.invalid_file;
+
   imageFields.forEach((fieldName) => {
     const dropZone = document.getElementById(`drop-zone-${fieldName}`);
     const fileInput = document.getElementById(`id_${fieldName}`);
@@ -24,8 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
         e.stopPropagation();
         e.preventDefault();
         fileInput.value = "";
-        preview.innerHTML =
-          '<span class="text-muted">Перетащите фото сюда или нажмите для выбора</span>';
+        preview.innerHTML = `<span class="text-muted">${uploadHint}</span>`;
         clearButton.classList.add("d-none");
         document.getElementById(`clear-input-${fieldName}`).value = "true";
       });
@@ -59,8 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
           reader.readAsDataURL(file);
           document.getElementById(`clear-input-${fieldName}`).value = "true";
         } else {
-          preview.innerHTML =
-            '<span class="text-muted">Неверный формат файла</span>';
+          preview.innerHTML = `<span class="text-muted">${invalidFile}</span>`;
         }
       }
     }

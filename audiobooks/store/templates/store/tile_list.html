@@ -1,6 +1,7 @@
 {% extends 'store/base.html' %}
 {% load pagination_tags %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
 <div class="container">
@@ -8,8 +9,9 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <form method="get" action="" class="search-form me-3">
             <div class="input-group">
-                <input type="text" name="query" value="{{ query }}" class="form-control" placeholder="Поиск...">
-                <button class="btn btn-pagination" type="submit">Поиск</button>
+                {% trans "Search" as search %}
+                <input type="text" name="query" value="{{ query }}" class="form-control" placeholder="{{ search }}...">
+                <button class="btn btn-pagination" type="submit">{% trans "Search" %}</button>
             </div>
         </form>
         {% pagination page_obj query %}

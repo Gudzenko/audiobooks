@@ -2,7 +2,7 @@ FROM python:3.9
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y supervisor cron dos2unix && apt-get clean
+RUN apt-get update && apt-get install -y supervisor cron dos2unix gettext && apt-get clean
 
 COPY entrypoint.sh /entrypoint.sh
 RUN dos2unix /entrypoint.sh && chmod +x /entrypoint.sh

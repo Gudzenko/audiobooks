@@ -1,5 +1,6 @@
 {% extends 'store/base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
 <div class="container">
@@ -10,9 +11,9 @@
         <h1>{{ author.first_name }} {{ author.last_name }}</h1>
     </div>
     <p>{{ author.description }}</p>
-    <h3>Книги автора:</h3>
+    <h3>{% trans "Author books" %}:</h3>
     {% if user.is_superuser %}
-        <a href="{% url 'book_add_author' author.slug %}" class="btn btn-secondary btn-sm mt-1 mb-1">Добавить новую книгу</a>
+        <a href="{% url 'book_add_author' author.slug %}" class="btn btn-secondary btn-sm mt-1 mb-1">{% trans "Add new book" %}</a>
     {% endif %}
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-4">
         {% for book in books %}

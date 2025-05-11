@@ -124,7 +124,7 @@
 
 .preview-image-container {
   max-height: 600px;
-  max-width: 300px;
+  max-width: 400px;
   overflow: hidden;
 }
 
@@ -132,4 +132,8 @@
   max-height: 600px;
   max-width: 300px;
   object-fit: contain;
+}
+
+.language-dropdown-toggle::after {
+  display: none !important;
 }
