@@ -134,6 +134,9 @@ msgstr "Добавить новую книгу"
 msgid "Search"
 msgstr "Поиск"
 
+msgid "Show only unread books"
+msgstr "Показать только непрочитанные книги"
+
 #: store/templates/store/author_detail.html
 msgid "Author books"
 msgstr "Книги автора"

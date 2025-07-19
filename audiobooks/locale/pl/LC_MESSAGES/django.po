@@ -134,6 +134,9 @@ msgstr "Dodaj nową książkę"
 msgid "Search"
 msgstr "Szukaj"
 
+msgid "Show only unread books"
+msgstr "Pokaż tylko nieprzeczytane książki"
+
 #: store/templates/store/author_detail.html
 msgid "Author books"
 msgstr "Książki autora"

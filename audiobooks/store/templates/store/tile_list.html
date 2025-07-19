@@ -7,12 +7,21 @@
 <div class="container">
     <h1 class="mb-4">{{ title }}</h1>
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <form method="get" action="" class="search-form me-3">
-            <div class="input-group">
+        <form method="get" action="" class="search-form me-3" id="filter-form">
+            <div class="input-group mb-2">
                 {% trans "Search" as search %}
                 <input type="text" name="query" value="{{ query }}" class="form-control" placeholder="{{ search }}...">
                 <button class="btn btn-pagination" type="submit">{% trans "Search" %}</button>
             </div>
+            {% if show_unread_filter %}
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="unread_only" value="1" 
+                           id="unread-filter" {% if unread_only %}checked{% endif %}>
+                    <label class="form-check-label" for="unread-filter">
+                        {% trans "Show only unread books" %}
+                    </label>
+                </div>
+            {% endif %}
         </form>
         {% pagination page_obj query %}
         <a href="{% url title_url|lower|add:'_add' %}" class="btn btn-secondary btn-sm">{{ add_item_name }}</a>
@@ -38,4 +47,15 @@
     </div>
     {% pagination page_obj query %}
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const unreadFilter = document.getElementById('unread-filter');
+    const filterForm = document.getElementById('filter-form');
+    
+    unreadFilter.addEventListener('change', function() {
+        filterForm.submit();
+    });
+});
+</script>
 {% endblock %}

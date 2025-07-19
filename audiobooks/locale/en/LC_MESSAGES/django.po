@@ -134,6 +134,9 @@ msgstr "Add new book"
 msgid "Search"
 msgstr "Search"
 
+msgid "Show only unread books"
+msgstr "Show only unread books"
+
 #: store/templates/store/author_detail.html
 msgid "Author books"
 msgstr "Author's books"

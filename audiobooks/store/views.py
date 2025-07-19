@@ -36,26 +36,33 @@ class PaginatedListView(LoginRequiredMixin, TemplateView):
     title = ''
     title_url = ''
     add_item_name = ''
+    show_unread_filter = False
 
     def get_items(self):
         return []
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         query = self.request.GET.get('query', '')
+        unread_only = self.request.GET.get('unread_only', '') == '1' if self.show_unread_filter else False
+        
         item_list = self.get_items()
         if query:
             item_list = [item for item in item_list if query.lower() in item['label'].lower()]
-
+        
+        if unread_only and hasattr(self, 'filter_unread'):
+            item_list = self.filter_unread(item_list)
+            
         paginator = Paginator(item_list, self.paginate_by)
         page_number = self.request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-
+        
         context['title'] = self.title
         context['title_url'] = self.title_url
         context['page_obj'] = page_obj
         context['query'] = query
+        context['unread_only'] = unread_only
+        context['show_unread_filter'] = self.show_unread_filter
         context['add_item_name'] = self.add_item_name
         return context
 
@@ -65,6 +72,7 @@ class BookListView(PaginatedListView):
     title_url = 'book'
     image = static('store/images/default_book.png')
     add_item_name = _('Add new book')
+    show_unread_filter = True
 
     def get_items(self):
         return [
@@ -72,9 +80,13 @@ class BookListView(PaginatedListView):
                 'image': book.image.url if book.image else self.image,
                 'label': book.title,
                 'slug': book.slug,
+                'book_obj': book,
             }
             for book in Book.objects.all()
         ]
+    
+    def filter_unread(self, item_list):
+        return [item for item in item_list if not item['book_obj'].is_read]
 
 
 class AuthorListView(PaginatedListView):
