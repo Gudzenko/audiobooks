@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - ./audiobooks:/app
+      - ./audiobooks/db.sqlite3:/app/db.sqlite3
       - /media/pi/ADATA_HM900/media:/app/media
     ports:
       - "8000:8000"

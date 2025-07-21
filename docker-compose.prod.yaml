@@ -9,6 +9,7 @@ services:
       - /media/pi/ADATA_HM900/media:/app/media
       #- ./audiobooks/media:/app/media
       - ./audiobooks/prodstaticfiles:/app/prodstaticfiles
+      - ./audiobooks/db.sqlite3:/app/db.sqlite3
     ports:
       - "8000:8000"
     env_file:
