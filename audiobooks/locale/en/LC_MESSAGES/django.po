@@ -145,6 +145,9 @@ msgstr "Author's books"
 msgid "Book audiofiles"
 msgstr "Audio files"
 
+msgid "Select multiple audio files to upload"
+msgstr "Select multiple audio files to upload"
+
 msgid "Book download all"
 msgstr "Download all"
 

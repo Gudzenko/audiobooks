@@ -145,6 +145,9 @@ msgstr "Книги автора"
 msgid "Book audiofiles"
 msgstr "Аудиофайлы"
 
+msgid "Select multiple audio files to upload"
+msgstr "Выберите несколько аудиофайлов для загрузки"
+
 msgid "Book download all"
 msgstr "Скачать все"
 

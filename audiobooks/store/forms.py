@@ -3,8 +3,35 @@ from django.utils.translation import gettext_lazy as _
 from .models import Book, Author, Genre, Series
 
 
+class MultipleFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+
+class MultipleFileField(forms.FileField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("widget", MultipleFileInput())
+        super().__init__(*args, **kwargs)
+
+    def clean(self, data, initial=None):
+        single_file_clean = super().clean
+        if isinstance(data, (list, tuple)):
+            result = [single_file_clean(d, initial) for d in data]
+        else:
+            result = single_file_clean(data, initial)
+        return result
+
+
 class BookForm(forms.ModelForm):
     image_fields = ['image']
+    audio_files = MultipleFileField(
+        widget=MultipleFileInput(attrs={
+            'accept': 'audio/*',
+            'class': 'form-control'
+        }),
+        required=False,
+        label=_('Book audiofiles'),
+        help_text=_('Select multiple audio files to upload')
+    )
 
     class Meta:
         model = Book
@@ -25,6 +52,13 @@ class BookForm(forms.ModelForm):
             'is_read': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        self.is_edit_mode = kwargs.pop('is_edit_mode', False)
+        super().__init__(*args, **kwargs)
+        
+        if self.is_edit_mode:
+            del self.fields['audio_files']
 
 
 class AuthorForm(forms.ModelForm):

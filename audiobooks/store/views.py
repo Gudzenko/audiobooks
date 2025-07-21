@@ -248,6 +248,12 @@ class GenericCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView)
                 initial[field] = value.all() if model_field.many_to_many else value
         return initial
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        if self.model == Book:
+            kwargs['is_edit_mode'] = self.get_object() is not None
+        return kwargs
+
     def form_valid(self, form):
         obj = self.get_object()
         if self.request.POST.get('clear_image') == 'true' and obj and obj.image:
@@ -255,12 +261,18 @@ class GenericCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView)
             obj.image = None
 
         if obj:
-            form = self.form_class(self.request.POST, self.request.FILES, instance=obj)
+            form = self.form_class(self.request.POST, self.request.FILES, instance=obj, is_edit_mode=True)
         else:
-            form = self.form_class(self.request.POST, self.request.FILES)
+            form = self.form_class(self.request.POST, self.request.FILES, is_edit_mode=False)
 
         if form.is_valid():
-            form.save()
+            book = form.save()
+            
+            if not obj and self.model == Book:
+                audio_files = self.request.FILES.getlist('audio_files')
+                for audio_file in audio_files:
+                    AudioFile.objects.create(book=book, file=audio_file)
+            
             messages.success(self.request, f'{self.model._meta.verbose_name.capitalize()} {_("Save success")}!')
             return redirect(self.success_url)
 
