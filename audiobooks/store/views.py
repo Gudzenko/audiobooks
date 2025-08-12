@@ -261,9 +261,15 @@ class GenericCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView)
             obj.image = None
 
         if obj:
-            form = self.form_class(self.request.POST, self.request.FILES, instance=obj, is_edit_mode=True)
+            if self.model == Book:
+                form = self.form_class(self.request.POST, self.request.FILES, instance=obj, is_edit_mode=True)
+            else:
+                form = self.form_class(self.request.POST, self.request.FILES, instance=obj)
         else:
-            form = self.form_class(self.request.POST, self.request.FILES, is_edit_mode=False)
+            if self.model == Book:
+                form = self.form_class(self.request.POST, self.request.FILES, is_edit_mode=False)
+            else:
+                form = self.form_class(self.request.POST, self.request.FILES)
 
         if form.is_valid():
             book = form.save()
