@@ -272,18 +272,22 @@ class GenericCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView)
                 form = self.form_class(self.request.POST, self.request.FILES)
 
         if form.is_valid():
-            book = form.save()
+            saved_object = form.save()
             
             if not obj and self.model == Book:
                 audio_files = self.request.FILES.getlist('audio_files')
                 for audio_file in audio_files:
-                    AudioFile.objects.create(book=book, file=audio_file)
-            
+                    AudioFile.objects.create(book=saved_object, file=audio_file)
+        
             messages.success(self.request, f'{self.model._meta.verbose_name.capitalize()} {_("Save success")}!')
             return redirect(self.success_url)
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(self.request, error)
+            
 
-        messages.error(self.request, f'{_("Save with error")} {self.model._meta.verbose_name}.')
-        return self.form_invalid(form)
+            return self.render_to_response(self.get_context_data(form=form))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

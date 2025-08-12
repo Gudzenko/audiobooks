@@ -66,6 +66,9 @@ msgstr "Okładka książki"
 msgid "Book placeholder title"
 msgstr "Wpisz tytuł książki"
 
+msgid "Book with this combination already exists"
+msgstr "Książka z taką kombinacją już istnieje"
+
 msgid "Author firstname"
 msgstr "Imię"
 
@@ -87,23 +90,32 @@ msgstr "Wpisz nazwisko"
 msgid "Author placeholder description"
 msgstr "Wpisz opis"
 
+msgid "Author with this name already exists"
+msgstr "Autor o tej nazwie już istnieje"
+
 msgid "Genre name"
 msgstr "Nazwa gatunku"
 
 msgid "Genre image"
-msgstr "Zdjęcie gatunku"
+msgstr "Obraz gatunku"
 
 msgid "Genre placeholder name"
-msgstr "Wpisz nazwę gatunku"
+msgstr "Wprowadź nazwę gatunku"
+
+msgid "Genre with this name already exists"
+msgstr "Gatunek o tej nazwie już istnieje"
 
 msgid "Series name"
 msgstr "Nazwa serii"
 
 msgid "Series image"
-msgstr "Zdjęcie serii"
+msgstr "Obraz serii"
 
 msgid "Series placeholder name"
-msgstr "Wpisz nazwę serii"
+msgstr "Wprowadź nazwę serii"
+
+msgid "Series with this name already exists"
+msgstr "Seria o tej nazwie już istnieje"
 
 #: store/templates/store/base.html
 msgid "Books"

@@ -66,6 +66,9 @@ msgstr "Обложка книги"
 msgid "Book placeholder title"
 msgstr "Введите название книги"
 
+msgid "Book with this combination already exists"
+msgstr "Книга с такой комбинацией уже существует"
+
 msgid "Author firstname"
 msgstr "Имя"
 
@@ -87,23 +90,32 @@ msgstr "Введите фамилию"
 msgid "Author placeholder description"
 msgstr "Введите описание"
 
+msgid "Author with this name already exists"
+msgstr "Автор с таким именем уже существует"
+
 msgid "Genre name"
 msgstr "Название жанра"
 
 msgid "Genre image"
-msgstr "Фото жанра"
+msgstr "Изображение жанра"
 
 msgid "Genre placeholder name"
 msgstr "Введите название жанра"
+
+msgid "Genre with this name already exists"
+msgstr "Жанр с таким названием уже существует"
 
 msgid "Series name"
 msgstr "Название серии"
 
 msgid "Series image"
-msgstr "Фото серии"
+msgstr "Изображение серии"
 
 msgid "Series placeholder name"
 msgstr "Введите название серии"
+
+msgid "Series with this name already exists"
+msgstr "Серия с таким название уже существует"
 
 #: store/templates/store/base.html
 msgid "Books"

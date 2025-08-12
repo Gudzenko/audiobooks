@@ -66,6 +66,9 @@ msgstr "Book cover"
 msgid "Book placeholder title"
 msgstr "Enter book title"
 
+msgid "Book with this combination already exists"
+msgstr "Book with this combination already exists"
+
 msgid "Author firstname"
 msgstr "First name"
 
@@ -87,23 +90,32 @@ msgstr "Enter last name"
 msgid "Author placeholder description"
 msgstr "Enter description"
 
+msgid "Author with this name already exists"
+msgstr "Author with this name already exists"
+
 msgid "Genre name"
 msgstr "Genre name"
 
 msgid "Genre image"
-msgstr "Genre photo"
+msgstr "Genre image"
 
 msgid "Genre placeholder name"
 msgstr "Enter genre name"
+
+msgid "Genre with this name already exists"
+msgstr "Genre with this name already exists"
 
 msgid "Series name"
 msgstr "Series name"
 
 msgid "Series image"
-msgstr "Series photo"
+msgstr "Series image"
 
 msgid "Series placeholder name"
 msgstr "Enter series name"
+
+msgid "Series with this name already exists"
+msgstr "Series with this name already exists"
 
 #: store/templates/store/base.html
 msgid "Books"

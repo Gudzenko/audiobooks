@@ -53,9 +53,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const unreadFilter = document.getElementById('unread-filter');
     const filterForm = document.getElementById('filter-form');
     
-    unreadFilter.addEventListener('change', function() {
-        filterForm.submit();
-    });
+    if (unreadFilter !== null) {
+        unreadFilter.addEventListener('change', function() {
+            filterForm.submit();
+        });
+    }
 });
 </script>
 {% endblock %}

@@ -1,5 +1,6 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
 from .models import Book, Author, Genre, Series
 
 
@@ -60,6 +61,30 @@ class BookForm(forms.ModelForm):
         if self.is_edit_mode:
             del self.fields['audio_files']
 
+    def clean(self):
+        cleaned_data = super().clean()
+        title = cleaned_data.get('title')
+        authors = cleaned_data.get('authors')
+        series = cleaned_data.get('series')
+        
+        if title:
+            from .utils import custom_slugify
+            
+            author_slugs = "_".join([custom_slugify(author.slug) for author in authors]) \
+                if authors else "no_author"
+            series_slug = series.slug if series else "no_series"
+            slug = custom_slugify(f"{author_slugs}_{series_slug}_{title}")
+            
+            if self.instance.pk:
+                existing_book = Book.objects.filter(slug=slug).exclude(pk=self.instance.pk).first()
+            else:
+                existing_book = Book.objects.filter(slug=slug).first()
+            
+            if existing_book:
+                raise ValidationError(_('Book with this combination already exists'))
+        
+        return cleaned_data
+
 
 class AuthorForm(forms.ModelForm):
     image_fields = ['image']
@@ -81,6 +106,25 @@ class AuthorForm(forms.ModelForm):
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
 
+    def clean(self):
+        cleaned_data = super().clean()
+        first_name = cleaned_data.get('first_name')
+        last_name = cleaned_data.get('last_name')
+        
+        if first_name and last_name:
+            from .utils import custom_slugify
+            slug = custom_slugify(f"{last_name} {first_name}")
+            
+            if self.instance.pk:
+                existing_author = Author.objects.filter(slug=slug).exclude(pk=self.instance.pk).first()
+            else:
+                existing_author = Author.objects.filter(slug=slug).first()
+            
+            if existing_author:
+                raise ValidationError(_('Author with this name already exists'))
+        
+        return cleaned_data
+
 
 class GenreForm(forms.ModelForm):
     image_fields = ['image']
@@ -97,6 +141,23 @@ class GenreForm(forms.ModelForm):
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
 
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name')
+        if name:
+            from .utils import custom_slugify
+            slug = custom_slugify(name)
+            
+            if self.instance.pk:
+                existing_genre = Genre.objects.filter(slug=slug).exclude(pk=self.instance.pk).first()
+            else:
+                existing_genre = Genre.objects.filter(slug=slug).first()
+            
+            if existing_genre:
+                raise ValidationError(_('Genre with this name already exists'))
+        
+        return cleaned_data
+
 
 class SeriesForm(forms.ModelForm):
     image_fields = ['image']
@@ -112,3 +173,20 @@ class SeriesForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Series placeholder name')}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        title = cleaned_data.get('title')
+        if title:
+            from .utils import custom_slugify
+            slug = custom_slugify(title)
+            
+            if self.instance.pk:
+                existing_series = Series.objects.filter(slug=slug).exclude(pk=self.instance.pk).first()
+            else:
+                existing_series = Series.objects.filter(slug=slug).first()
+            
+            if existing_series:
+                raise ValidationError(_('Series with this name already exists'))
+        
+        return cleaned_data

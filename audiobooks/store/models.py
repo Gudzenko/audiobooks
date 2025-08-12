@@ -1,6 +1,7 @@
 import logging
 import os
 import shutil
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import m2m_changed, pre_delete
 from django.dispatch import receiver
@@ -87,12 +88,22 @@ class Book(models.Model):
     image = models.ImageField(upload_to=book_image_upload_path, blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+        if not self.title:
+            raise ValidationError("Book title is required")
+        if not self.pk:
+            import uuid
+            self.slug = f"temp_{uuid.uuid4().hex[:8]}"
+            super().save(*args, **kwargs)
+            return
+
         if self.title:
             author_slugs = "_".join([custom_slugify(author.slug) for author in self.authors.all()]) \
                 if self.authors.exists() else "no_author"
             series_slug = self.series.slug if self.series else "no_series"
             self.slug = custom_slugify(f"{author_slugs}_{series_slug}_{self.title}")
+            if Book.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+                raise ValidationError(f"Book with slug '{self.slug}' already exists")
+
             delete_old_image(self)
             super().save(*args, **kwargs)
 
