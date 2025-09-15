@@ -320,6 +320,27 @@ class BookCreateOrEditView(GenericCreateOrEditView):
     form_class = BookForm
     success_url = 'book_list'
 
+    def get_initial(self):
+        initial = super().get_initial()
+        genre_slug = self.kwargs.get('genre_slug')
+        author_slug = self.kwargs.get('author_slug')
+        series_slug = self.kwargs.get('series_slug')
+
+        if genre_slug:
+            genre = Genre.objects.filter(slug=genre_slug).first()
+            if genre:
+                initial['genres'] = [genre.pk]
+        if author_slug:
+            author = Author.objects.filter(slug=author_slug).first()
+            if author:
+                initial['authors'] = [author.pk]
+        if series_slug:
+            series = Series.objects.filter(slug=series_slug).first()
+            if series:
+                initial['series'] = series.pk
+
+        return initial
+
 
 class AuthorCreateOrEditView(GenericCreateOrEditView):
     model = Author
