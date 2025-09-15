@@ -297,6 +297,21 @@ class GenericCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView)
         if context['object']:
             context['delete_url'] = f"{self.model._meta.model_name}_delete"
         context['image_fields_json'] = mark_safe(json.dumps(self.form_class.image_fields))
+
+        if context['object']:
+            context['form_title'] = f"{_('Form edit')} \"{str(context['object']).upper()}\""
+        else:
+            titles = {
+                Book: _("Add new book"),
+                Author: _("Add new author"),
+                Series: _("Add new series"),
+                Genre: _("Add new genre"),
+            }
+
+            context['form_title'] = titles.get(
+                self.model,
+                f"{_('Form add')} {context['model_name'].upper()}"
+            )
         return context
 
 

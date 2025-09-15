@@ -30,13 +30,13 @@ msgstr "Польский"
 
 #: store/views.py
 msgid "Add new author"
-msgstr "Добавить автора"
+msgstr "Добавить нового автора"
 
 msgid "Add new series"
-msgstr "Добавить серию"
+msgstr "Добавить новую серию"
 
 msgid "Add new genre"
-msgstr "Добавить жанр"
+msgstr "Добавить новый жанр"
 
 msgid "Save success"
 msgstr "успешно сохранён"
