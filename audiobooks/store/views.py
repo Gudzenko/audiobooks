@@ -17,6 +17,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from .forms import BookForm, AuthorForm, SeriesForm, GenreForm
 from .models import Book, Author, Series, Genre, AudioFile
+from django.contrib.messages import get_messages
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -278,15 +279,12 @@ class GenericCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView)
                 audio_files = self.request.FILES.getlist('audio_files')
                 for audio_file in audio_files:
                     AudioFile.objects.create(book=saved_object, file=audio_file)
-        
-            messages.success(self.request, f'{self.model._meta.verbose_name.capitalize()} {_("Save success")}!')
-            return redirect(self.success_url)
+            
+            return redirect(reverse(self.success_url))  
         else:
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(self.request, error)
-            
-
             return self.render_to_response(self.get_context_data(form=form))
 
     def get_context_data(self, **kwargs):
