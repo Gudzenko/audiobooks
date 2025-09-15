@@ -102,7 +102,13 @@ class AuthorForm(forms.ModelForm):
             'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Author placeholder firstname')}),
             'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Author placeholder lastname')}),
             'description': forms.Textarea(
-                attrs={'class': 'form-control', 'rows': 4, 'placeholder': _('Author placeholder description')}),
+                attrs={
+                    'class': 'form-control',
+                    'rows': 4,
+                    'placeholder': _('Author placeholder description'),
+                    'style': 'resize: none;',
+                }
+            ),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
 
