@@ -3,6 +3,10 @@
 {% load i18n %}
 
 {% block content %}
+<div id="global-loader" class="global-loader d-none">
+    <div class="loader-spinner"></div>
+</div>
+
 <div class="container mt-5">
     <div class="card shadow">
         <div class="card-header bg-secondary text-white text-center">
@@ -26,10 +30,10 @@
                 </div>
             {% endif %}
 
-            <form method="post" enctype="multipart/form-data">
+            <form id="main-form" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% for field in form %}
-                     {% if field.name in form.image_fields %}
+                    {% if field.name in form.image_fields %}
                         <div class="mb-3">
                             <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
                             <div class="upload-container text-center border rounded p-3 d-flex flex-column align-items-center" id="drop-zone-{{ field.name }}">
@@ -40,8 +44,7 @@
                                     {% if object and field.value %}
                                         <img src="{{ field.value.url }}" alt="Current Image" class="img-fluid rounded preview">
                                     {% else %}
-                                        <span class="text-muted">
-                                            {% trans "Form add image" %}</span>
+                                        <span class="text-muted">{% trans "Form add image" %}</span>
                                     {% endif %}
                                 </div>
                                 <button type="button" class="btn btn-danger btn-sm mt-2 d-none" id="clear-{{ field.name }}">
@@ -109,5 +112,13 @@
             "upload_hint": "{% trans 'Form add image' %}",
             "invalid_file": "{% trans 'Form invalid format' %}"
         }
+    </script>
+    <script>
+        function showGlobalLoader() {
+            document.getElementById('global-loader').classList.remove('d-none');
+        }
+        document.getElementById('main-form').addEventListener('submit', function() {
+            showGlobalLoader();
+        });
     </script>
 {% endblock %}
