@@ -17,6 +17,7 @@ urlpatterns = [
     path('author/add/', views.AuthorCreateOrEditView.as_view(), name='author_add'),
     path('author/<slug:slug>/edit/', views.AuthorCreateOrEditView.as_view(), name='author_edit'),
     path('author/<slug:slug>/delete/', views.AuthorDeleteView.as_view(), name='author_delete'),
+    path('author-autocomplete/', views.AuthorAutocomplete.as_view(), name='author-autocomplete'),
     path('series/', views.SeriesListView.as_view(), name='series_list'),
     path('series/add/', views.SeriesCreateOrEditView.as_view(), name='series_add'),
     path('series/<slug:slug>/edit/', views.SeriesCreateOrEditView.as_view(), name='series_edit'),

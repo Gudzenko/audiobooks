@@ -7,6 +7,8 @@ from django.views.generic.edit import FormView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator
 from django.contrib import messages
+from django.db.models import Value, CharField
+from django.db.models.functions import Concat
 from django.templatetags.static import static
 from django.views.generic import TemplateView, DetailView
 from django.views import View
@@ -15,6 +17,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
+from dal import autocomplete
+
 from .forms import BookForm, AuthorForm, SeriesForm, GenreForm
 from .models import Book, Author, Series, Genre, AudioFile
 from django.contrib.messages import get_messages
@@ -407,3 +411,17 @@ class BookDeleteView(GenericDeleteView):
             audio.delete()
 
         return super().form_valid(form)
+
+
+class AuthorAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Author.objects.all()
+        if self.q and len(self.q) >= 2:
+            qs = Author.objects.annotate(
+                full_name=Concat('first_name', Value(' '), 'last_name', output_field=CharField())
+            )
+            qs = qs.filter(full_name__iregex=self.q).order_by('last_name', 'first_name')
+        return qs
+
+    def get_result_label(self, item):
+        return f"{item.first_name} {item.last_name}"

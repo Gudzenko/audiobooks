@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
+from dal import autocomplete
 from .models import Book, Author, Genre, Series
 
 
@@ -47,7 +48,10 @@ class BookForm(forms.ModelForm):
         }
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Book placeholder title')}),
-            'authors': forms.CheckboxSelectMultiple(),
+            'authors': autocomplete.ModelSelect2Multiple(
+                url='author-autocomplete',
+                attrs={'data-minimum-input-length': 2}
+            ),
             'genres': forms.CheckboxSelectMultiple(),
             'series': forms.Select(attrs={'class': 'form-select'}),
             'is_read': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
