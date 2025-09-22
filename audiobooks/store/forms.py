@@ -52,8 +52,12 @@ class BookForm(forms.ModelForm):
                 url='author-autocomplete',
                 attrs={'data-minimum-input-length': 2}
             ),
-            'genres': forms.CheckboxSelectMultiple(),
-            'series': forms.Select(attrs={'class': 'form-select'}),
+            'genres': autocomplete.ModelSelect2Multiple(
+                url='genre-autocomplete'
+            ),
+            'series': autocomplete.ModelSelect2(
+                url='series-autocomplete'
+            ),
             'is_read': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }

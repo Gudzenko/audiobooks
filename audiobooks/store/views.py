@@ -425,3 +425,25 @@ class AuthorAutocomplete(autocomplete.Select2QuerySetView):
 
     def get_result_label(self, item):
         return f"{item.first_name} {item.last_name}"
+
+
+class GenreAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Genre.objects.all()
+        if self.q:
+            qs = qs.filter(name__iregex=self.q).order_by('name')
+        return qs
+
+    def get_result_label(self, item):
+        return f"{item.name}"
+
+
+class SeriesAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Series.objects.all()
+        if self.q:
+            qs = qs.filter(title__iregex=self.q).order_by('title')
+        return qs
+
+    def get_result_label(self, item):
+        return f"{item.title}"
