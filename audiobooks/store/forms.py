@@ -1,8 +1,13 @@
+import logging
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from dal import autocomplete
 from .models import Book, Author, Genre, Series
+
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger('Forms')
 
 
 class MultipleFileInput(forms.ClearableFileInput):
@@ -75,22 +80,19 @@ class BookForm(forms.ModelForm):
         authors = cleaned_data.get('authors')
         series = cleaned_data.get('series')
         
-        if title:
+        if title and authors is not None:
             from .utils import custom_slugify
             
             author_slugs = "_".join([custom_slugify(author.slug) for author in authors]) \
                 if authors else "no_author"
             series_slug = series.slug if series else "no_series"
-            slug = custom_slugify(f"{author_slugs}_{series_slug}_{title}")
-            
-            if self.instance.pk:
-                existing_book = Book.objects.filter(slug=slug).exclude(pk=self.instance.pk).first()
-            else:
-                existing_book = Book.objects.filter(slug=slug).first()
-            
-            if existing_book:
-                raise ValidationError(_('Book with this combination already exists'))
-        
+            new_slug = custom_slugify(f"{author_slugs}_{series_slug}_{title}")
+            if not self.instance.pk or (self.instance.pk and self.instance.slug != new_slug):
+                existing_book = Book.objects.filter(slug=new_slug).exclude(pk=self.instance.pk if self.instance.pk else None).first()
+                
+                if existing_book:
+                    raise ValidationError(_('Book with this combination already exists'))
+    
         return cleaned_data
 
 

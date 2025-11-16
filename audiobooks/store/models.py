@@ -33,6 +33,9 @@ class Genre(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['name']
+
 
 class Author(models.Model):
     first_name = models.CharField(max_length=100)
@@ -55,6 +58,9 @@ class Author(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+    class Meta:
+        ordering = ['last_name', 'first_name']
 
 
 class Series(models.Model):
@@ -100,12 +106,15 @@ class Book(models.Model):
             author_slugs = "_".join([custom_slugify(author.slug) for author in self.authors.all()]) \
                 if self.authors.exists() else "no_author"
             series_slug = self.series.slug if self.series else "no_series"
-            self.slug = custom_slugify(f"{author_slugs}_{series_slug}_{self.title}")
-            if Book.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
-                raise ValidationError(f"Book with slug '{self.slug}' already exists")
+            new_slug = custom_slugify(f"{author_slugs}_{series_slug}_{self.title}")
+            if new_slug != self.slug:
+                if Book.objects.filter(slug=new_slug).exclude(pk=self.pk).exists():
+                    logger.error(f"Book with slug '{new_slug}' already exists!")
+                    raise ValidationError(f"Book with slug '{new_slug}' already exists")
+                self.slug = new_slug
 
-            delete_old_image(self)
-            super().save(*args, **kwargs)
+        delete_old_image(self)
+        super().save(*args, **kwargs)
 
     def move_to_new_path(self):
         old_path = self.file.path
@@ -118,6 +127,9 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ['title', 'slug']
 
 
 @receiver(m2m_changed, sender=Book.authors.through)

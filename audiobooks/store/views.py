@@ -21,7 +21,6 @@ from dal import autocomplete
 
 from .forms import BookForm, AuthorForm, SeriesForm, GenreForm
 from .models import Book, Author, Series, Genre, AudioFile
-from django.contrib.messages import get_messages
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -255,8 +254,11 @@ class GenericCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
+        obj = self.get_object()
+        if obj:
+            kwargs['instance'] = obj
         if self.model == Book:
-            kwargs['is_edit_mode'] = self.get_object() is not None
+            kwargs['is_edit_mode'] = obj is not None
         return kwargs
 
     def form_valid(self, form):
