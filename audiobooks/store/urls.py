@@ -30,4 +30,5 @@ urlpatterns = [
     path('genre/<slug:slug>/edit/', views.GenreCreateOrEditView.as_view(), name='genre_edit'),
     path('genre/<slug:slug>/delete/', views.GenreDeleteView.as_view(), name='genre_delete'),
     path('genre/<slug:slug>/', views.GenreDetailView.as_view(), name='genre_detail'),
+    path('api/authors/', views.AuthorsListAPIView.as_view(), name='api_authors_list'),
 ]

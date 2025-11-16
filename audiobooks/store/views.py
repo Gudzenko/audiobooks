@@ -18,9 +18,13 @@ from django.urls import reverse, reverse_lazy
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from dal import autocomplete
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 
 from .forms import BookForm, AuthorForm, SeriesForm, GenreForm
 from .models import Book, Author, Series, Genre, AudioFile
+from .utils import export_authors_to_csv, export_books_to_csv
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -449,3 +453,28 @@ class SeriesAutocomplete(autocomplete.Select2QuerySetView):
 
     def get_result_label(self, item):
         return f"{item.title}"
+
+
+class AuthorsListAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        filepath, filename, count, authors_data = export_authors_to_csv()
+        logger.info(f"Authors list saved to {filepath}")
+        
+        return Response({
+            'count': count,
+            'file': filepath,
+            'authors': authors_data
+        }, status=status.HTTP_200_OK)
+
+
+class BooksListAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        filepath, filename, count, books_data = export_books_to_csv()
+        
+        logger.info(f"Books list saved to {filepath}")
+        
+        return Response({
+            'count': count,
+            'file': filepath,
+            'books': books_data
+        }, status=status.HTTP_200_OK)
