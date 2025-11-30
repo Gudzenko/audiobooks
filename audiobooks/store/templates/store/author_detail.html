@@ -1,6 +1,7 @@
 {% extends 'store/base.html' %}
 {% load static %}
 {% load i18n %}
+{% load book_list_tags %}
 
 {% block content %}
 <div class="container">
@@ -15,19 +16,6 @@
     {% if user.is_superuser %}
         <a href="{% url 'book_add_author' author.slug %}" class="btn btn-secondary btn-sm mt-1 mb-1">{% trans "Add new book" %}</a>
     {% endif %}
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-4">
-        {% for book in books %}
-            <div class="col">
-                <a href="{% url 'book_detail' book.slug %}" class="text-decoration-none">
-                    <div class="card h-100">
-                        <img src="{% if book.image %}{{ book.image.url }}{% else %}{% static 'store/images/default_book.png' %}{% endif %}" class="card-img-top" alt="Image">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">{{ book.title }}</h5>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        {% endfor %}
-    </div>
+    {% book_grid books %}
 </div>
 {% endblock %}
