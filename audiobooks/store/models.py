@@ -116,15 +116,6 @@ class Book(models.Model):
         delete_old_image(self)
         super().save(*args, **kwargs)
 
-    def move_to_new_path(self):
-        old_path = self.file.path
-        new_path = audio_file_upload_path(self, os.path.basename(old_path))
-        if old_path != new_path:
-            os.makedirs(os.path.dirname(new_path), exist_ok=True)
-            shutil.move(old_path, new_path)
-            self.file.name = new_path.replace('media/', '')
-            self.save()
-
     def __str__(self):
         return self.title
 
@@ -139,9 +130,6 @@ def update_book_slug(sender, instance, action, **kwargs):
         series_slug = custom_slugify(instance.series.title) if instance.series else "no_series"
         instance.slug = custom_slugify(f"{author_slugs}_{series_slug}_{instance.title}")
         instance.save()
-
-    for audio_file in instance.audio_files.all():
-        audio_file.move_to_new_path()
 
 
 class AudioFile(models.Model):

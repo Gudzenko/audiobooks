@@ -24,7 +24,7 @@ from rest_framework import status
 
 from .forms import BookForm, AuthorForm, SeriesForm, GenreForm
 from .models import Book, Author, Series, Genre, AudioFile
-from .utils import export_authors_to_csv, export_books_to_csv
+from .utils import export_authors_to_csv, export_books_to_csv, handle_book_slug_change
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -261,8 +261,6 @@ class GenericCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView)
         obj = self.get_object()
         if obj:
             kwargs['instance'] = obj
-        if self.model == Book:
-            kwargs['is_edit_mode'] = obj is not None
         return kwargs
 
     def form_valid(self, form):
@@ -271,31 +269,8 @@ class GenericCreateOrEditView(LoginRequiredMixin, UserPassesTestMixin, FormView)
             obj.image.delete(save=False)
             obj.image = None
 
-        if obj:
-            if self.model == Book:
-                form = self.form_class(self.request.POST, self.request.FILES, instance=obj, is_edit_mode=True)
-            else:
-                form = self.form_class(self.request.POST, self.request.FILES, instance=obj)
-        else:
-            if self.model == Book:
-                form = self.form_class(self.request.POST, self.request.FILES, is_edit_mode=False)
-            else:
-                form = self.form_class(self.request.POST, self.request.FILES)
-
-        if form.is_valid():
-            saved_object = form.save()
-            
-            if not obj and self.model == Book:
-                audio_files = self.request.FILES.getlist('audio_files')
-                for audio_file in audio_files:
-                    AudioFile.objects.create(book=saved_object, file=audio_file)
-            
-            return redirect(reverse(self.success_url))  
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(self.request, error)
-            return self.render_to_response(self.get_context_data(form=form))
+        saved_object = form.save()
+        return redirect(reverse(self.success_url))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -328,6 +303,11 @@ class BookCreateOrEditView(GenericCreateOrEditView):
     form_class = BookForm
     success_url = 'book_list'
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['is_edit_mode'] = kwargs.get('instance') is not None
+        return kwargs
+
     def get_initial(self):
         initial = super().get_initial()
         genre_slug = self.kwargs.get('genre_slug')
@@ -348,6 +328,32 @@ class BookCreateOrEditView(GenericCreateOrEditView):
                 initial['series'] = series.pk
 
         return initial
+
+    def form_valid(self, form):
+        book_id = form.instance.pk
+        old_slug = None
+        
+        if book_id:
+            old_book = Book.objects.get(pk=book_id)
+            old_slug = old_book.slug
+            logger.info(f"Editing book ID={book_id}, old_slug={old_slug}")
+        
+        result = super().form_valid(form)
+        
+        try:
+            if old_slug:
+                saved_book = Book.objects.get(pk=book_id)
+                handle_book_slug_change(saved_book, old_slug)
+            else:
+                audio_files = self.request.FILES.getlist('audio_files')
+                saved_book = Book.objects.get(slug=form.instance.slug)
+                for audio_file in audio_files:
+                    AudioFile.objects.create(book=saved_book, file=audio_file)
+        except Exception as e:
+            logger.error(f"Error handling audio files: {e}")
+            messages.error(self.request, _("Error processing audio files"))
+    
+        return result
 
 
 class AuthorCreateOrEditView(GenericCreateOrEditView):
@@ -421,7 +427,7 @@ class BookDeleteView(GenericDeleteView):
 
 class AuthorAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        qs = Author.objects.all()
+        qs = Author.objects.all().order_by('last_name', 'first_name')
         if self.q and len(self.q) >= 2:
             qs = Author.objects.annotate(
                 full_name=Concat('first_name', Value(' '), 'last_name', output_field=CharField())
@@ -435,7 +441,7 @@ class AuthorAutocomplete(autocomplete.Select2QuerySetView):
 
 class GenreAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        qs = Genre.objects.all()
+        qs = Genre.objects.all().order_by('name')
         if self.q:
             qs = qs.filter(name__iregex=self.q).order_by('name')
         return qs
@@ -446,7 +452,7 @@ class GenreAutocomplete(autocomplete.Select2QuerySetView):
 
 class SeriesAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        qs = Series.objects.all()
+        qs = Series.objects.all().order_by('title')
         if self.q:
             qs = qs.filter(title__iregex=self.q).order_by('title')
         return qs

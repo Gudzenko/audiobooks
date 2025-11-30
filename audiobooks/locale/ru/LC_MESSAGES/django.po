@@ -215,3 +215,6 @@ msgstr "Добро пожаловать в наш книжный магазин!
 
 msgid "Home welcome find"
 msgstr "Здесь вы найдете книги, авторов, жанры и серии."
+
+msgid "Error processing audio files"
+msgstr "Ошибка обработки аудиофайлов"

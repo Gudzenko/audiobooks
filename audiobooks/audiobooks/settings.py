@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from django.utils.translation import gettext_lazy as _
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -187,11 +188,13 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': 'audiobooks.log',
             'formatter': 'verbose',
+            'encoding': 'utf-8',
         },
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
+            'stream': sys.stdout,
         },
     },
     'root': {
@@ -200,9 +203,16 @@ LOGGING = {
     },
 }
 
+if sys.stdout.encoding != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stderr.reconfigure(encoding='utf-8')
+    except AttributeError:
+        pass
+
 
 FILE_UPLOAD_MAX_MEMORY_SIZE = 8000 * 1024 * 1024
 DATA_UPLOAD_MAX_MEMORY_SIZE = 8000 * 1024 * 1024
 
 DATA_UPLOAD_MAX_NUMBER_FILES = 5000
-DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000

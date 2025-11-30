@@ -216,3 +216,5 @@ msgstr "Witamy w naszej księgarni!"
 msgid "Home welcome find"
 msgstr "Tutaj znajdziesz książki, autorów, gatunki i serie."
 
+msgid "Error processing audio files"
+msgstr "Błąd przetwarzania plików audio"
