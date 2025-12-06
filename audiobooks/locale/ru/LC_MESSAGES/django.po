@@ -218,3 +218,18 @@ msgstr "Здесь вы найдете книги, авторов, жанры и
 
 msgid "Error processing audio files"
 msgstr "Ошибка обработки аудиофайлов"
+
+msgid "Preparing upload..."
+msgstr "Подготовка загрузки..."
+
+msgid "Uploading..."
+msgstr "Загрузка..."
+
+msgid "Processing..."
+msgstr "Обработка..."
+
+msgid "Upload error. Please try again."
+msgstr "Ошибка загрузки. Пожалуйста, попробуйте снова."
+
+msgid "Upload cancelled."
+msgstr "Загрузка отменена."

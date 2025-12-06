@@ -218,3 +218,18 @@ msgstr "Tutaj znajdziesz książki, autorów, gatunki i serie."
 
 msgid "Error processing audio files"
 msgstr "Błąd przetwarzania plików audio"
+
+msgid "Preparing upload..."
+msgstr "Przygotowanie przesyłania..."
+
+msgid "Uploading..."
+msgstr "Przesyłanie..."
+
+msgid "Processing..."
+msgstr "Przetwarzanie..."
+
+msgid "Upload error. Please try again."
+msgstr "Błąd przesyłania. Spróbuj ponownie."
+
+msgid "Upload cancelled."
+msgstr "Przesyłanie anulowane."

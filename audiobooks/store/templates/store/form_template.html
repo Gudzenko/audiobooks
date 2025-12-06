@@ -3,9 +3,7 @@
 {% load i18n %}
 
 {% block content %}
-<div id="global-loader" class="global-loader d-none">
-    <div class="loader-spinner"></div>
-</div>
+{% include 'store/_loader.html' %}
 
 <div class="container mt-5">
     <div class="card shadow">
@@ -112,16 +110,14 @@
     <script id="i18n-js" type="application/json">
         {
             "upload_hint": "{% trans 'Form add image' %}",
-            "invalid_file": "{% trans 'Form invalid format' %}"
+            "invalid_file": "{% trans 'Form invalid format' %}",
+            "preparing": "{% trans 'Preparing upload...' %}",
+            "uploading": "{% trans 'Uploading...' %}",
+            "processing": "{% trans 'Processing...' %}",
+            "uploadError": "{% trans 'Upload error. Please try again.' %}",
+            "uploadAborted": "{% trans 'Upload cancelled.' %}"
         }
     </script>
-    <script>
-        function showGlobalLoader() {
-            document.getElementById('global-loader').classList.remove('d-none');
-        }
-        document.getElementById('main-form').addEventListener('submit', function() {
-            showGlobalLoader();
-        });
-    </script>
+    {% include 'store/_loader_script.html' %}
     {{ form.media }}
 {% endblock %}
