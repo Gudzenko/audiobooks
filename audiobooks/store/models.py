@@ -3,13 +3,20 @@ import os
 import shutil
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.signals import m2m_changed, pre_delete
+from django.db.models.signals import m2m_changed, post_delete
 from django.dispatch import receiver
-from .utils import custom_slugify, delete_old_image, genre_image_upload_path, author_image_upload_path, \
-    series_image_upload_path, book_image_upload_path, audio_file_upload_path
+from .storage_paths import (
+    audio_file_upload_path,
+    author_image_upload_path,
+    book_image_upload_path,
+    delete_old_image,
+    delete_file_after_commit,
+    genre_image_upload_path,
+    series_image_upload_path,
+)
+from .text_utils import custom_slugify
 
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger('Model')
 
 
@@ -24,11 +31,6 @@ class Genre(models.Model):
             return
         delete_old_image(self)
         super().save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        if self.image and os.path.isfile(self.image.path):
-            os.remove(self.image.path)
-        super().delete(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -51,11 +53,6 @@ class Author(models.Model):
         delete_old_image(self)
         super().save(*args, **kwargs)
 
-    def delete(self, *args, **kwargs):
-        if self.image and os.path.isfile(self.image.path):
-            os.remove(self.image.path)
-        super().delete(*args, **kwargs)
-
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
@@ -74,11 +71,6 @@ class Series(models.Model):
             return
         delete_old_image(self)
         super().save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        if self.image and os.path.isfile(self.image.path):
-            os.remove(self.image.path)
-        super().delete(*args, **kwargs)
 
     def __str__(self):
         return self.title
@@ -138,22 +130,31 @@ class AudioFile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
+        old_file = None
         if self.pk:
             old_file = AudioFile.objects.get(pk=self.pk).file
-            if old_file and old_file != self.file:
-                old_file.delete(save=False)
         super().save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        if self.file:
-            self.file.delete(save=False)
-        super().delete(*args, **kwargs)
+        if old_file and old_file != self.file:
+            delete_file_after_commit(old_file.storage, old_file.name)
 
     def __str__(self):
         return os.path.basename(self.file.name)
 
 
-@receiver(pre_delete, sender=AudioFile)
+@receiver(post_delete, sender=AudioFile)
 def delete_file_on_instance_delete(sender, instance, **kwargs):
     if instance.file:
-        instance.file.delete(save=False)
+        delete_file_after_commit(instance.file.storage, instance.file.name)
+
+
+def _delete_image_on_instance_delete(instance):
+    if instance.image:
+        delete_file_after_commit(instance.image.storage, instance.image.name)
+
+
+@receiver(post_delete, sender=Genre)
+@receiver(post_delete, sender=Author)
+@receiver(post_delete, sender=Series)
+@receiver(post_delete, sender=Book)
+def delete_image_on_instance_delete(sender, instance, **kwargs):
+    _delete_image_on_instance_delete(instance)

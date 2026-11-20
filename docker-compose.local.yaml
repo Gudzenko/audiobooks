@@ -1,0 +1,81 @@
+services:
+  web:
+    build:
+      context: ./audiobooks
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./audiobooks:/app
+      - local_database:/app/localdata
+      - local_media:/app/media
+    environment:
+      SECRET_KEY: local-development-only-secret-key
+      DEBUG: "True"
+      ALLOWED_HOSTS: "localhost,127.0.0.1,web"
+      CSRF_TRUSTED_ORIGINS: "http://localhost:8000,http://127.0.0.1:8000"
+      DATABASE_PATH: /app/localdata/db.sqlite3
+      FILE_UPLOAD_TEMP_DIR: /app/media/.upload_tmp
+      TMPDIR: /app/media/.upload_tmp
+      TEST_ADMIN_EMAIL: admin@example.com
+      TEST_ADMIN_USERNAME: admin
+      TEST_ADMIN_PASSWORD: admin
+    command: >-
+      bash -c "python manage.py migrate &&
+      python manage.py seed_test_data &&
+      uvicorn audiobooks.asgi:application --host 0.0.0.0 --port 8000 --reload"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 8000), 2).close()"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  browser-tests:
+    profiles: ["browser-tests"]
+    build: ./browser-tests
+    depends_on:
+      browser-web:
+        condition: service_healthy
+    environment:
+      BASE_URL: http://browser-web:8000
+      TEST_ADMIN_USERNAME: admin
+      TEST_ADMIN_PASSWORD: admin
+    ipc: host
+    volumes:
+      - ./browser-tests/test-results:/tests/test-results
+
+  browser-web:
+    profiles: ["browser-tests"]
+    build:
+      context: ./audiobooks
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./audiobooks:/app
+      - browser_test_database:/app/browserdata
+      - browser_test_media:/app/media
+    environment:
+      SECRET_KEY: browser-test-only-secret-key
+      DEBUG: "True"
+      ALLOWED_HOSTS: "browser-web"
+      CSRF_TRUSTED_ORIGINS: "http://browser-web:8000"
+      DATABASE_PATH: /app/browserdata/db.sqlite3
+      FILE_UPLOAD_TEMP_DIR: /app/media/.upload_tmp
+      TMPDIR: /app/media/.upload_tmp
+      TEST_ADMIN_EMAIL: admin@example.com
+      TEST_ADMIN_USERNAME: admin
+      TEST_ADMIN_PASSWORD: admin
+    command: >-
+      bash -c "python manage.py migrate &&
+      python manage.py seed_test_data &&
+      uvicorn audiobooks.asgi:application --host 0.0.0.0 --port 8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 8000), 2).close()"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  local_database:
+  local_media:
+  browser_test_database:
+  browser_test_media:

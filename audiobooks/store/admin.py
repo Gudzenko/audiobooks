@@ -3,7 +3,8 @@ from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from django.http import HttpResponseRedirect
 from .models import Genre, Author, Series, Book, AudioFile
-from .utils import get_image_preview, export_authors_to_csv, export_books_to_csv
+from .export_services import export_authors_to_csv, export_books_to_csv
+from .storage_paths import get_image_preview
 
 
 @admin.register(Genre)

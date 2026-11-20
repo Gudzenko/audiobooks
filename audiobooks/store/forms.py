@@ -1,13 +1,17 @@
-import logging
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from dal import autocomplete
 from .models import Book, Author, Genre, Series
+from .text_utils import custom_slugify
 
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger('Forms')
+def validate_unique_slug(model, slug, instance, error_message):
+    queryset = model.objects.filter(slug=slug)
+    if instance.pk:
+        queryset = queryset.exclude(pk=instance.pk)
+    if queryset.exists():
+        raise ValidationError(error_message)
 
 
 class MultipleFileInput(forms.ClearableFileInput):
@@ -67,13 +71,6 @@ class BookForm(forms.ModelForm):
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
 
-    def __init__(self, *args, **kwargs):
-        self.is_edit_mode = kwargs.pop('is_edit_mode', False)
-        super().__init__(*args, **kwargs)
-        
-        if self.is_edit_mode:
-            del self.fields['audio_files']
-
     def clean(self):
         cleaned_data = super().clean()
         title = cleaned_data.get('title')
@@ -81,17 +78,17 @@ class BookForm(forms.ModelForm):
         series = cleaned_data.get('series')
         
         if title and authors is not None:
-            from .utils import custom_slugify
-            
             author_slugs = "_".join([custom_slugify(author.slug) for author in authors]) \
                 if authors else "no_author"
             series_slug = series.slug if series else "no_series"
             new_slug = custom_slugify(f"{author_slugs}_{series_slug}_{title}")
-            if not self.instance.pk or (self.instance.pk and self.instance.slug != new_slug):
-                existing_book = Book.objects.filter(slug=new_slug).exclude(pk=self.instance.pk if self.instance.pk else None).first()
-                
-                if existing_book:
-                    raise ValidationError(_('Book with this combination already exists'))
+            if self.instance.slug != new_slug:
+                validate_unique_slug(
+                    Book,
+                    new_slug,
+                    self.instance,
+                    _('Book with this combination already exists'),
+                )
     
         return cleaned_data
 
@@ -128,16 +125,13 @@ class AuthorForm(forms.ModelForm):
         last_name = cleaned_data.get('last_name')
         
         if first_name and last_name:
-            from .utils import custom_slugify
             slug = custom_slugify(f"{last_name} {first_name}")
-            
-            if self.instance.pk:
-                existing_author = Author.objects.filter(slug=slug).exclude(pk=self.instance.pk).first()
-            else:
-                existing_author = Author.objects.filter(slug=slug).first()
-            
-            if existing_author:
-                raise ValidationError(_('Author with this name already exists'))
+            validate_unique_slug(
+                Author,
+                slug,
+                self.instance,
+                _('Author with this name already exists'),
+            )
         
         return cleaned_data
 
@@ -161,16 +155,13 @@ class GenreForm(forms.ModelForm):
         cleaned_data = super().clean()
         name = cleaned_data.get('name')
         if name:
-            from .utils import custom_slugify
             slug = custom_slugify(name)
-            
-            if self.instance.pk:
-                existing_genre = Genre.objects.filter(slug=slug).exclude(pk=self.instance.pk).first()
-            else:
-                existing_genre = Genre.objects.filter(slug=slug).first()
-            
-            if existing_genre:
-                raise ValidationError(_('Genre with this name already exists'))
+            validate_unique_slug(
+                Genre,
+                slug,
+                self.instance,
+                _('Genre with this name already exists'),
+            )
         
         return cleaned_data
 
@@ -194,15 +185,12 @@ class SeriesForm(forms.ModelForm):
         cleaned_data = super().clean()
         title = cleaned_data.get('title')
         if title:
-            from .utils import custom_slugify
             slug = custom_slugify(title)
-            
-            if self.instance.pk:
-                existing_series = Series.objects.filter(slug=slug).exclude(pk=self.instance.pk).first()
-            else:
-                existing_series = Series.objects.filter(slug=slug).first()
-            
-            if existing_series:
-                raise ValidationError(_('Series with this name already exists'))
+            validate_unique_slug(
+                Series,
+                slug,
+                self.instance,
+                _('Series with this name already exists'),
+            )
         
         return cleaned_data

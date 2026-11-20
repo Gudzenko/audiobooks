@@ -73,12 +73,12 @@
         <div class="list-group">
             {% for audio in audio_files %}
                 <div class="list-group-item d-flex justify-content-between align-items-center audio-item">
-                    <audio controls class="audio-control">
-                        <source src="{{ audio.file.url }}" type="audio/mpeg">
+                    <audio controls preload="none" class="audio-control">
+                        <source src="{% url 'audio_file' audio.pk %}" type="audio/mpeg">
                         {% trans "Book not support audio" %}
                     </audio>
                     <span class="audio-title">{{ audio.file.name|basename }}</span>
-                    <a href="{{ audio.file.url }}" class="btn btn-secondary btn-sm" download>{% trans "Book download" %}</a>
+                    <a href="{% url 'audio_file' audio.pk %}" class="btn btn-secondary btn-sm" download>{% trans "Book download" %}</a>
                 </div>
             {% endfor %}
         </div>

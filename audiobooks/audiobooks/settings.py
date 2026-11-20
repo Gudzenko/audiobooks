@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 import sys
 
@@ -22,15 +23,41 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-testtesttesttesttesttesttesttesttesttesttesttestte')
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY or not SECRET_KEY.strip():
+    if not DEBUG:
+        raise ImproperlyConfigured(
+            'SECRET_KEY must be set when DEBUG is disabled.'
+        )
+    SECRET_KEY = 'django-insecure-local-development-only'
 
-CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://192.168.34.6').split(',')
+
+def get_list_setting(name, development_default):
+    values = [
+        value.strip()
+        for value in os.getenv(name, '').split(',')
+        if value.strip()
+    ]
+    if values:
+        return values
+    if not DEBUG:
+        raise ImproperlyConfigured(
+            f'{name} must be set when DEBUG is disabled.'
+        )
+    return development_default
+
+
+ALLOWED_HOSTS = get_list_setting(
+    'ALLOWED_HOSTS',
+    ['localhost', '127.0.0.1'],
+)
+CSRF_TRUSTED_ORIGINS = get_list_setting(
+    'CSRF_TRUSTED_ORIGINS',
+    ['http://localhost:8000', 'http://127.0.0.1:8000'],
+)
 
 
 # Application definition
@@ -87,7 +114,7 @@ WSGI_APPLICATION = 'audiobooks.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.environ.get('DATABASE_PATH', BASE_DIR / 'db.sqlite3'),
     }
 }
 
@@ -150,6 +177,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'authapp.CustomUser'
 
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'
 
@@ -173,23 +201,12 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {message}',
-            'style': '{',
-        },
         'simple': {
             'format': '{levelname} {message}',
             'style': '{',
         },
     },
     'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'audiobooks.log',
-            'formatter': 'verbose',
-            'encoding': 'utf-8',
-        },
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
@@ -198,7 +215,7 @@ LOGGING = {
         },
     },
     'root': {
-        'handlers': ['file', 'console'],
+        'handlers': ['console'],
         'level': 'INFO',
     },
 }
@@ -211,8 +228,10 @@ if sys.stdout.encoding != 'utf-8':
         pass
 
 
-FILE_UPLOAD_MAX_MEMORY_SIZE = 8000 * 1024 * 1024
-DATA_UPLOAD_MAX_MEMORY_SIZE = 8000 * 1024 * 1024
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
+FILE_UPLOAD_TEMP_DIR = os.getenv('FILE_UPLOAD_TEMP_DIR') or None
+MAX_AUDIO_FILE_SIZE = 4_000_000_000
 
 DATA_UPLOAD_MAX_NUMBER_FILES = 5000
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000

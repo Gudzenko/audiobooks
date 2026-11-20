@@ -19,8 +19,10 @@ from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.urls import path, include
+from store.blocked_audio_urls import block_direct_audio_access
 
 urlpatterns = [
+    path('media/audio/<path:path>', block_direct_audio_access),
     path('admin/', admin.site.urls),
     path('auth/', include('authapp.urls')),
     path('store/', include('store.urls')),
