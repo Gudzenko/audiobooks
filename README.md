@@ -153,6 +153,50 @@ docker compose -f docker-compose.prod.yaml run --rm \
   --entrypoint python web manage.py cleanup_upload_temp
 ```
 
+## Deferred operations
+
+These maintenance tasks are intentionally deferred:
+
+- Schedule `backup_database` and copy verified backups off the Raspberry Pi.
+  Define retention before enabling the schedule so old copies cannot fill the
+  system disk. Audio files are not included in the SQLite backup.
+- Schedule `cleanup_upload_temp` after uploads have been observed in production
+  for a while. Run it in `--dry-run` mode first and delete only files older than
+  the agreed retention period.
+
+Cron or a systemd timer can run either command later. The command itself must
+remain usable manually so scheduled execution is only an operational wrapper.
+
+## MCP and chat roadmap
+
+The MCP endpoint remains part of the Django ASGI application and uses the same
+catalog services and user accounts. It should not become a separate service at
+this stage.
+
+1. Stabilize the read-only MCP contract. Keep a small set of composable tools
+   for catalog discovery, multi-criteria book search, item details, summaries
+   and suggestions. Add contract tests for pagination, sorting, exact and fuzzy
+   matching, empty results and permissions.
+2. Add a provider-neutral chat layer inside Django. The chat orchestration and
+   conversation history must be independent of a particular AI provider. A
+   provider adapter supplies text generation, while catalog access goes through
+   the same MCP tools or underlying application services.
+3. Build the first in-application chat as a read-only assistant. Start with
+   questions that can be answered entirely from the local catalog: finding and
+   comparing books, authors, genres and series, and explaining search results.
+4. Add external catalog comparison only as a separate integration. Questions
+   such as “which works by this author are missing” require an authoritative
+   external list; the local database alone cannot determine that reliably.
+5. Add write-capable MCP tools later. Separate read and write permissions,
+   validate every input, record an audit trail and require explicit confirmation
+   for destructive operations. Keep write tools disabled by default.
+6. Add operational limits and diagnostics: request timeouts, result limits,
+   structured logs, tool-call metrics and end-to-end tests through the chat UI.
+
+The recommended next increment is step 1 only: review the current MCP schemas
+against real catalog questions, close gaps in read-only tools and freeze their
+input/output contracts before implementing the chat interface.
+
 Create super user
 cd audiobooks
 python .\manage.py createsuperuser
