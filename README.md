@@ -57,7 +57,32 @@ docker compose -f docker-compose.local.yaml --profile browser-tests \
 The test uses a dedicated browser-test database, logs in as the seeded local admin,
 uploads two small fixture files, verifies the book page, and removes the book.
 
-Run prod:
+## Production-like smoke environment
+
+Run an isolated production-like copy on http://localhost:8080/:
+
+```bash
+docker compose -p audiobooks-smoke -f docker-compose.smoke.yaml up -d --build
+```
+
+It uses the production Dockerfile, Uvicorn workers and Nginx, but has separate
+Docker volumes for its database, media, static files and backups. It creates
+only three test books and two tiny WAV files; it never reads production data.
+
+Sign in with email `smoke@example.com` and password `smoke`. The username is
+`smoke`. Stop the environment without deleting its data:
+
+```bash
+docker compose -p audiobooks-smoke -f docker-compose.smoke.yaml down
+```
+
+Delete only the isolated smoke data and recreate it from scratch:
+
+```bash
+docker compose -p audiobooks-smoke -f docker-compose.smoke.yaml down -v
+```
+
+## Production
 
 The production `.env` file must contain a non-empty `SECRET_KEY`,
 `ALLOWED_HOSTS`, and `CSRF_TRUSTED_ORIGINS`. Both host settings accept

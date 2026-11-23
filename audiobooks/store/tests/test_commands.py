@@ -4,12 +4,13 @@ import time
 from io import StringIO
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.core.management import CommandError, call_command
 from django.test import TestCase, TransactionTestCase, override_settings
 
-from ..models import Author, Book, Genre, Series
+from ..models import AudioFile, Author, Book, Genre, Series
 
 
 class SeedTestDataCommandTests(TestCase):
@@ -32,6 +33,49 @@ class SeedTestDataCommandTests(TestCase):
             Book.objects.count(),
             Genre.objects.count(),
             Series.objects.count(),
+        )
+
+
+class SeedSmokeDataCommandTests(TestCase):
+    def setUp(self):
+        self.media_directory = TemporaryDirectory()
+        self.settings_override = override_settings(
+            MEDIA_ROOT=self.media_directory.name,
+        )
+        self.settings_override.enable()
+
+    def tearDown(self):
+        self.settings_override.disable()
+        self.media_directory.cleanup()
+
+    def test_requires_explicit_enable_flag(self):
+        with patch.dict(os.environ, {}, clear=True):
+            with self.assertRaisesMessage(CommandError, "SMOKE_DATA_ENABLED=True"):
+                call_command("seed_smoke_data", verbosity=0)
+
+    def test_creates_small_idempotent_catalog_with_valid_audio(self):
+        with patch.dict(os.environ, {"SMOKE_DATA_ENABLED": "True"}, clear=True):
+            call_command("seed_smoke_data", verbosity=0)
+            first_counts = self._catalog_counts()
+            call_command("seed_smoke_data", verbosity=0)
+
+        self.assertEqual(self._catalog_counts(), first_counts)
+        self.assertEqual(first_counts, (1, 3, 2, 1, 2))
+        admin = get_user_model().objects.get(email="smoke@example.com")
+        self.assertTrue(admin.is_superuser)
+        self.assertTrue(admin.check_password("smoke"))
+        for audio in AudioFile.objects.all():
+            with audio.file.open("rb") as stream:
+                self.assertEqual(stream.read(4), b"RIFF")
+
+    @staticmethod
+    def _catalog_counts():
+        return (
+            Author.objects.count(),
+            Book.objects.count(),
+            Genre.objects.count(),
+            Series.objects.count(),
+            AudioFile.objects.count(),
         )
 
 
