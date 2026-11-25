@@ -300,6 +300,33 @@ model reasoning tokens.
 - Write-capable MCP tools, audit logging, confirmations for destructive actions,
   provider metrics and scheduled maintenance remain future work.
 
+### Remaining work
+
+The current read-only MCP and chat flow is deployed and usable. The following
+work is intentionally deferred, in priority order:
+
+1. Replace temporary OpenAI and Exa API keys with new production keys. Never
+   commit real keys; update only the ignored production `.env` file.
+2. Schedule `backup_database`, define backup retention, and copy verified
+   backups away from the Raspberry Pi. The SQLite backup does not contain
+   audiobook, cover, or other media files.
+3. Schedule `cleanup_upload_temp` after first running it with `--dry-run` and
+   agreeing on the retention period.
+4. Add provider observability: OpenAI and Exa request counts, failures, latency,
+   approximate cost, and a clear user-visible status when a provider is
+   unavailable.
+5. Improve comparisons using production examples. Comparisons currently use
+   book-card metadata; collection contents cannot be inferred unless they are
+   stored explicitly in the catalog.
+6. Add write-capable MCP tools only with permission checks, explicit
+   confirmation for destructive actions, validation, and an audit log. Possible
+   future operations include creating and editing books, authors, genres, and
+   series.
+7. Make `scripts/check_prod_media.sh` an enforced production deployment
+   preflight instead of a manual step. Deployment must stop before Docker starts
+   if the external disk, UUID, UTF-8 filenames, images, or audio files fail the
+   check.
+
 ## Development commands
 
 Create a superuser outside Docker:
