@@ -105,6 +105,42 @@ The production `.env` file must contain a non-empty `SECRET_KEY`,
 comma-separated lists. Keep the existing secret key when updating an
 installation so current sessions and JWTs remain valid.
 
+Before every production build or restart, verify that the external media disk
+is mounted at the path used by `docker-compose.prod.yaml`:
+
+```bash
+./scripts/check_prod_media.sh
+```
+
+Do not start or recreate the containers if this check fails. Docker can create
+an empty host directory for a missing bind mount. The application will then
+start successfully, but covers and audio files will appear to be missing even
+though they are still present on the external disk.
+
+The check verifies all of the following:
+
+- `/media/pi/ADATA_HM900` is a real mount point, not an ordinary directory;
+- the mounted filesystem has UUID `16FC-2860`;
+- the expected image and audio directories exist;
+- at least one image and one audio file are readable.
+- filenames do not contain replacement `?` characters caused by mounting the
+  FAT filesystem without UTF-8 support.
+
+Run the isolated preflight tests locally after changing the script:
+
+```bash
+./scripts/test_check_prod_media.sh
+```
+
+The paths and UUID can be overridden for another installation:
+
+```bash
+MEDIA_MOUNT_POINT=/mnt/audiobooks \
+MEDIA_DISK_UUID=AAAA-BBBB \
+MEDIA_HOST_DIR=/mnt/audiobooks/media \
+./scripts/check_prod_media.sh
+```
+
 ```bash
 docker compose -f docker-compose.prod.yaml up --build
 ```
@@ -304,12 +340,31 @@ df -h
 
 ### External drive mounted with a new name
 
-When the drive mounts as ADATA_HM9001 instead of ADATA_HM900:
+If the drive mounts as `ADATA_HM9001` instead of `ADATA_HM900`, stop the
+application before changing the mount:
 
 ```bash
+docker compose -f docker-compose.prod.yaml stop web nginx
 sudo umount /media/pi/ADATA_HM9001
-sudo rm -rf /media/pi/ADATA_HM900
 ```
 
-Unplug and reconnect the drive.
-It should now mount as /media/pi/ADATA_HM900
+Mount the filesystem by UUID on the stable production path. The Raspberry Pi
+installation currently uses this `/etc/fstab` entry:
+
+```fstab
+UUID=16FC-2860 /media/pi/ADATA_HM900 vfat defaults,nofail,uid=1000,gid=1000,umask=0022,utf8,x-systemd.device-timeout=30 0 0
+```
+
+After editing `/etc/fstab`, reload systemd, mount the disk, and run the
+preflight check before starting Docker:
+
+```bash
+sudo systemctl daemon-reload
+sudo mount /media/pi/ADATA_HM900
+./scripts/check_prod_media.sh
+docker compose -f docker-compose.prod.yaml up -d web nginx
+```
+
+Never delete the expected mount directory recursively while diagnosing this
+problem. First use `findmnt /media/pi/ADATA_HM900` and `lsblk -f` to establish
+where the external filesystem is actually mounted.
