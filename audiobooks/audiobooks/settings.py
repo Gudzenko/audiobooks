@@ -50,6 +50,21 @@ def get_list_setting(name, development_default):
     return development_default
 
 
+def get_number_setting(name, default, *, cast, minimum, maximum):
+    raw_value = os.getenv(name, str(default))
+    try:
+        value = cast(raw_value)
+    except ValueError as error:
+        raise ImproperlyConfigured(
+            f'{name} must be a number.'
+        ) from error
+    if not minimum <= value <= maximum:
+        raise ImproperlyConfigured(
+            f'{name} must be between {minimum} and {maximum}.'
+        )
+    return value
+
+
 ALLOWED_HOSTS = get_list_setting(
     'ALLOWED_HOSTS',
     ['localhost', '127.0.0.1'],
@@ -235,3 +250,62 @@ MAX_AUDIO_FILE_SIZE = 4_000_000_000
 
 DATA_UPLOAD_MAX_NUMBER_FILES = 5000
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000
+
+CHAT_MODEL_PROVIDER = os.getenv('CHAT_MODEL_PROVIDER', 'mock')
+WEB_SEARCH_PROVIDER = os.getenv('WEB_SEARCH_PROVIDER', 'mock')
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '')
+OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'gpt-6-luna')
+EXA_API_KEY = os.getenv('EXA_API_KEY', '')
+CHAT_PROVIDER_TIMEOUT = get_number_setting(
+    'CHAT_PROVIDER_TIMEOUT', 20, cast=float, minimum=1, maximum=120
+)
+CHAT_WEB_RESULT_LIMIT = get_number_setting(
+    'CHAT_WEB_RESULT_LIMIT', 4, cast=int, minimum=1, maximum=20
+)
+CHAT_SITE_RESULT_LIMIT = get_number_setting(
+    'CHAT_SITE_RESULT_LIMIT', 12, cast=int, minimum=1, maximum=30
+)
+CHAT_CATALOG_RESULT_LIMIT = get_number_setting(
+    'CHAT_CATALOG_RESULT_LIMIT', 200, cast=int, minimum=1, maximum=1000
+)
+CHAT_WEB_CONTENT_MAX_CHARS = get_number_setting(
+    'CHAT_WEB_CONTENT_MAX_CHARS',
+    10000,
+    cast=int,
+    minimum=1000,
+    maximum=100000,
+)
+CHAT_WEB_CONTENT_TOTAL_MAX_CHARS = get_number_setting(
+    'CHAT_WEB_CONTENT_TOTAL_MAX_CHARS',
+    24000,
+    cast=int,
+    minimum=1000,
+    maximum=200000,
+)
+CHAT_PLAN_MAX_OUTPUT_TOKENS = get_number_setting(
+    'CHAT_PLAN_MAX_OUTPUT_TOKENS', 1200, cast=int, minimum=100, maximum=4000
+)
+CHAT_CLARIFICATION_MAX_OUTPUT_TOKENS = get_number_setting(
+    'CHAT_CLARIFICATION_MAX_OUTPUT_TOKENS',
+    500,
+    cast=int,
+    minimum=100,
+    maximum=2000,
+)
+CHAT_ANSWER_MAX_OUTPUT_TOKENS = get_number_setting(
+    'CHAT_ANSWER_MAX_OUTPUT_TOKENS', 1600, cast=int, minimum=200, maximum=8000
+)
+CHAT_LIST_MAX_OUTPUT_TOKENS = get_number_setting(
+    'CHAT_LIST_MAX_OUTPUT_TOKENS', 6000, cast=int, minimum=500, maximum=16000
+)
+CHAT_TITLE_MATCH_MAX_OUTPUT_TOKENS = get_number_setting(
+    'CHAT_TITLE_MATCH_MAX_OUTPUT_TOKENS',
+    3000,
+    cast=int,
+    minimum=200,
+    maximum=8000,
+)
+CHAT_REQUESTS_PER_MINUTE = get_number_setting(
+    'CHAT_REQUESTS_PER_MINUTE', 10, cast=int, minimum=1, maximum=100
+)
+CHAT_RATE_LIMIT_DIR = os.getenv('CHAT_RATE_LIMIT_DIR', '/tmp/audiobooks-chat-limits')

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-10 13:00+0000\n"
+"POT-Creation-Date: 2026-11-25 08:53+0000\n"
 "PO-Revision-Date: 2025-05-10 13:10+0000\n"
 "Last-Translator: Oleksandr Gudzenko\n"
 "Language-Team: Russian\n"
@@ -15,221 +15,601 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-
-#: audiobooks/settings.py
+#: audiobooks/settings.py:168
 msgid "English"
 msgstr "Английский"
 
+#: audiobooks/settings.py:169
 msgid "Russian"
 msgstr "Русский"
 
+#: audiobooks/settings.py:170
 msgid "Polish"
 msgstr "Польский"
 
-#: store/views.py
-msgid "Add new author"
-msgstr "Добавить нового автора"
+#: store/admin.py:36
+msgid ""
+"Successfully exported {} authors to file: <a href=\"/{}\" "
+"target=\"_blank\">{}</a>"
+msgstr ""
 
-msgid "Add new series"
-msgstr "Добавить новую серию"
+#: store/admin.py:43
+msgid "Export all authors to CSV file"
+msgstr ""
 
-msgid "Add new genre"
-msgstr "Добавить новый жанр"
+#: store/admin.py:89
+msgid ""
+"Successfully exported {} books to file: <a href=\"/{}\" target=\"_blank\">{}"
+"</a>"
+msgstr ""
 
-msgid "Save success"
-msgstr "успешно сохранён"
+#: store/admin.py:96
+msgid "Export all books to CSV file"
+msgstr ""
 
-msgid "Save with error"
-msgstr "Ошибка при сохранении"
+#: store/chat/response_formatters.py:9
+msgid "Found in the catalog by title"
+msgstr "Найдено в каталоге по названию"
 
-#: store/forms.py
-msgid "Book title"
-msgstr "Название книги"
+#: store/chat/response_formatters.py:10
+msgid "Not found as separate catalog entries"
+msgstr "Не найдено отдельными записями"
 
-msgid "Authors"
-msgstr "Авторы"
+#: store/chat/response_formatters.py:14
+msgid "Other catalog entries"
+msgstr "Другие записи каталога"
 
-msgid "Book genres"
-msgstr "Жанры"
+#: store/chat/response_formatters.py:18
+msgid ""
+"The comparison uses catalog card titles. Collection contents are not stored "
+"in the catalog."
+msgstr ""
+"Сравнение выполнено по названиям карточек. Состав сборников в каталоге не "
+"указан."
 
-msgid "Book series"
-msgstr "Серия"
+#: store/chat/response_formatters.py:23 store/chat/response_formatters.py:35
+msgid "Source limitation"
+msgstr "Ограничение источников"
 
-msgid "Book is read"
-msgstr "Прочитано"
+#: store/chat/response_formatters.py:30
+msgid "Found in external sources"
+msgstr "Найдено во внешних источниках"
 
-msgid "Book image"
-msgstr "Обложка книги"
+#: store/chat/response_formatters.py:40 store/chat/response_formatters.py:63
+msgid "the requested site"
+msgstr "запрошенном сайте"
 
-msgid "Book placeholder title"
-msgstr "Введите название книги"
+#: store/chat/response_formatters.py:44
+#, python-format
+msgid "Found %(count)d separate page."
+msgid_plural "Found %(count)d separate pages."
+msgstr[0] "Найдена %(count)d отдельная страница."
+msgstr[1] "Найдено %(count)d отдельные страницы."
+msgstr[2] "Найдено %(count)d отдельных страниц."
 
-msgid "Book with this combination already exists"
-msgstr "Книга с такой комбинацией уже существует"
+#: store/chat/response_formatters.py:49
+#, python-format
+msgid "Found on %(site)s"
+msgstr "Найдено на %(site)s"
 
-msgid "Author firstname"
-msgstr "Имя"
+#: store/chat/response_formatters.py:50 store/chat/response_formatters.py:98
+msgid "Nothing found."
+msgstr "Ничего не найдено."
 
-msgid "Author lastname"
-msgstr "Фамилия"
+#: store/chat/response_formatters.py:54 store/chat/response_formatters.py:89
+msgid "Note"
+msgstr "Примечание"
 
-msgid "Author description"
-msgstr "Описание"
+#: store/chat/response_formatters.py:70
+msgid "in the library"
+msgstr "в библиотеке"
 
-msgid "Author image"
-msgstr "Фото автора"
+#: store/chat/response_formatters.py:76
+#, python-format
+msgid "Found both on %(site)s and in the library"
+msgstr "Есть и на %(site)s, и в библиотеке"
 
-msgid "Author placeholder firstname"
-msgstr "Введите имя"
+#: store/chat/response_formatters.py:80
+#, python-format
+msgid "Found on %(site)s, but not in the library"
+msgstr "Есть на %(site)s, но нет в библиотеке"
 
-msgid "Author placeholder lastname"
-msgstr "Введите фамилию"
+#: store/chat/response_formatters.py:84
+#, python-format
+msgid "Found in the library, but not on %(site)s"
+msgstr "Есть в библиотеке, но не найдено на %(site)s"
 
-msgid "Author placeholder description"
-msgstr "Введите описание"
+#: store/chat/response_sections.py:11
+msgid "Local catalog"
+msgstr "Локальный каталог"
 
-msgid "Author with this name already exists"
-msgstr "Автор с таким именем уже существует"
+#: store/chat/response_sections.py:16
+msgid "In local catalog"
+msgstr "Есть в локальном каталоге"
 
-msgid "Genre name"
-msgstr "Название жанра"
+#: store/chat/response_sections.py:19
+msgid "Open book"
+msgstr "Открыть книгу"
 
-msgid "Genre image"
-msgstr "Изображение жанра"
+#: store/chat/response_sections.py:37
+msgid "Web results"
+msgstr "Результаты из интернета"
 
-msgid "Genre placeholder name"
-msgstr "Введите название жанра"
+#: store/chat/response_sections.py:42
+msgid "Not compared"
+msgstr "Не сравнивалось"
 
-msgid "Genre with this name already exists"
-msgstr "Жанр с таким названием уже существует"
+#: store/chat/response_sections.py:45 store/chat/response_sections.py:77
+msgid "Open source"
+msgstr "Открыть источник"
 
-msgid "Series name"
-msgstr "Название серии"
+#: store/chat/response_sections.py:85
+msgid "Sources"
+msgstr "Источники"
 
-msgid "Series image"
-msgstr "Изображение серии"
+#: store/chat/schemas.py:227
+msgid ""
+"This answer is too long to retain fully in the chat context. Refine the next "
+"request by author, series, genre, or combine several filters."
+msgstr ""
+"Этот ответ слишком большой, чтобы полностью сохранить его в контексте чата. "
+"Уточните следующий запрос по автору, серии, жанру или объедините несколько "
+"фильтров."
 
-msgid "Series placeholder name"
-msgstr "Введите название серии"
+#: store/chat/schemas.py:234
+msgid "Warning"
+msgstr "Предупреждение"
 
-msgid "Series with this name already exists"
-msgstr "Серия с таким название уже существует"
+#: store/chat/services.py:120
+#, python-format
+msgid ""
+"The local catalog contains %(total)d matching books. Only the first "
+"%(limit)d are shown. Refine the request by author, series, genre, or combine "
+"several filters."
+msgstr ""
+"В локальном каталоге найдено %(total)d книг. Показаны только первые "
+"%(limit)d. Уточните запрос по автору, серии, жанру или объедините несколько "
+"фильтров."
 
-#: store/templates/store/base.html
-msgid "Books"
-msgstr "Книги"
+#: store/chat/services.py:271
+msgid "External results are demonstration data. No website was contacted."
+msgstr ""
+"Внешние результаты являются демонстрационными. Обращения к сайту не было."
 
-msgid "Series"
-msgstr "Серии"
+#: store/chat/services.py:284
+msgid ""
+"This is a simulated external-service failure. The result is partial and "
+"external data was not checked."
+msgstr ""
+"Это имитация сбоя внешнего сервиса. Результат неполный, внешние данные не "
+"проверялись."
 
-msgid "Genres"
-msgstr "Жанры"
+#: store/chat/services.py:288
+msgid ""
+"Web search is temporarily unavailable. The result is partial and external "
+"data was not checked."
+msgstr ""
+"Поиск в интернете временно недоступен. Результат неполный, внешние данные не "
+"проверялись."
 
-msgid "Hello"
-msgstr "Привет"
+#: store/chat/services.py:298
+#, python-format
+msgid ""
+"The external source returned too many items. Only the first %(limit)d are "
+"shown. Refine the request by author, series, genre, or combine several "
+"filters."
+msgstr ""
+"Во внешнем источнике найдено слишком много записей. Показаны только первые "
+"%(limit)d. Уточните запрос по автору, серии, жанру или объедините несколько "
+"фильтров."
 
-msgid "Logout"
-msgstr "Выйти"
+#: store/chat/services.py:311
+msgid ""
+"Some external source content was unavailable or limited. The result may be "
+"incomplete."
+msgstr ""
+"Часть содержимого внешних источников недоступна или ограничена. Результат "
+"может быть неполным."
 
-msgid "Login"
-msgstr "Войти"
+msgid ""
+"The answer reached the configured size limit. Refine the request to get a "
+"more complete result."
+msgstr ""
+"Ответ достиг установленного ограничения размера. Уточните запрос, чтобы "
+"получить более полный результат."
 
-msgid "Register"
-msgstr "Зарегистрироваться"
+#: store/chat/views.py:28
+msgid "Authentication required."
+msgstr "Требуется авторизация."
 
-#: store/template/store/
-msgid "Add new book"
-msgstr "Добавить новую книгу"
+#: store/chat/views.py:34
+msgid "Content-Type must be application/json."
+msgstr "Content-Type должен быть application/json."
 
-msgid "Search"
-msgstr "Поиск"
+#: store/chat/views.py:43
+msgid "Invalid chat request."
+msgstr "Некорректный запрос к чату."
 
-msgid "Show only unread books"
-msgstr "Показать только непрочитанные книги"
+#: store/chat/views.py:54
+msgid "The chat model is temporarily unavailable."
+msgstr "Модель чата временно недоступна."
 
-#: store/templates/store/author_detail.html
-msgid "Author books"
-msgstr "Книги автора"
+#: store/chat/views.py:63
+msgid "The chat service is temporarily unavailable."
+msgstr "Сервис чата временно недоступен."
 
-#: store/templates/store/book_detail.html
-msgid "Book audiofiles"
-msgstr "Аудиофайлы"
-
-msgid "Select multiple audio files to upload"
-msgstr "Выберите несколько аудиофайлов для загрузки"
-
-msgid "Book download all"
-msgstr "Скачать все"
-
-msgid "Book not support audio"
-msgstr "Ваш браузер не поддерживает аудиоплеер"
-
-msgid "Book download"
-msgstr "Скачать"
-
-msgid "Book remove"
-msgstr "Удалить книгу"
-
-msgid "Book confirm remove message"
-msgstr "Вы уверены, что хотите удалить эту книгу?"
-
-#: store/templates/store/form_template.html
+#: store/edit_views.py:71
 msgid "Form edit"
 msgstr "Редактировать"
 
+#: store/edit_views.py:74 store/templates/store/author_detail.html:17
+#: store/templates/store/genre_detail.html:11
+#: store/templates/store/series_detail.html:10 store/views.py:57
+msgid "Add new book"
+msgstr "Добавить новую книгу"
+
+#: store/edit_views.py:75 store/views.py:79
+msgid "Add new author"
+msgstr "Добавить нового автора"
+
+#: store/edit_views.py:76 store/views.py:96
+msgid "Add new series"
+msgstr "Добавить новую серию"
+
+#: store/edit_views.py:77 store/views.py:113
+msgid "Add new genre"
+msgstr "Добавить новый жанр"
+
+#: store/edit_views.py:81 store/templates/store/form_template.html:73
 msgid "Form add"
 msgstr "Добавить"
 
-msgid "Form add image"
-msgstr "Перетащите фото сюда или нажмите для выбора"
-
-msgid "Form clear image"
-msgstr "Очистить"
-
-msgid "Form cancel"
-msgstr "Отмена"
-
-msgid "Form remove"
-msgstr "Удалить"
-
-msgid "Form save"
-msgstr "Сохранить изменения"
-
-msgid "Form confirm remove"
-msgstr "Подтверждение удаления"
-
-msgid "Form confirm remove question"
-msgstr "Вы уверены, что хотите удалить"
-
-msgid "Form confirm remove message"
-msgstr "Это действие нельзя отменить"
-
-msgid "Form invalid format"
-msgstr "Неверный формат файла"
-
-#: store/templates/store/home.html
-msgid "Home welcome"
-msgstr "Добро пожаловать в наш книжный магазин!"
-
-msgid "Home welcome find"
-msgstr "Здесь вы найдете книги, авторов, жанры и серии."
-
+#: store/edit_views.py:148
 msgid "Error processing audio files"
 msgstr "Ошибка обработки аудиофайлов"
 
+#: store/forms.py:43 store/templates/store/book_detail.html:70
+msgid "Book audiofiles"
+msgstr "Аудиофайлы"
+
+#: store/forms.py:44
+msgid "Select multiple audio files to upload"
+msgstr "Выберите несколько аудиофайлов для загрузки"
+
+#: store/forms.py:51
+msgid "Book title"
+msgstr "Название книги"
+
+#: store/forms.py:52 store/templates/store/base.html:29
+#: store/templates/store/book_detail.html:18 store/views.py:76
+msgid "Authors"
+msgstr "Авторы"
+
+#: store/forms.py:53 store/templates/store/book_detail.html:52
+msgid "Book genres"
+msgstr "Жанры"
+
+#: store/forms.py:54 store/templates/store/book_detail.html:37
+msgid "Book series"
+msgstr "Серия"
+
+#: store/forms.py:55
+msgid "Book is read"
+msgstr "Прочитано"
+
+#: store/forms.py:56
+msgid "Book image"
+msgstr "Обложка книги"
+
+#: store/forms.py:59
+msgid "Book placeholder title"
+msgstr "Введите название книги"
+
+#: store/forms.py:90
+msgid "Book with this combination already exists"
+msgstr "Книга с такой комбинацией уже существует"
+
+#: store/forms.py:103
+msgid "Author firstname"
+msgstr "Имя"
+
+#: store/forms.py:104
+msgid "Author lastname"
+msgstr "Фамилия"
+
+#: store/forms.py:105
+msgid "Author description"
+msgstr "Описание"
+
+#: store/forms.py:106
+msgid "Author image"
+msgstr "Фото автора"
+
+#: store/forms.py:109
+msgid "Author placeholder firstname"
+msgstr "Введите имя"
+
+#: store/forms.py:110
+msgid "Author placeholder lastname"
+msgstr "Введите фамилию"
+
+#: store/forms.py:115
+msgid "Author placeholder description"
+msgstr "Введите описание"
+
+#: store/forms.py:133
+msgid "Author with this name already exists"
+msgstr "Автор с таким именем уже существует"
+
+#: store/forms.py:146
+msgid "Genre name"
+msgstr "Название жанра"
+
+#: store/forms.py:147
+msgid "Genre image"
+msgstr "Изображение жанра"
+
+#: store/forms.py:150
+msgid "Genre placeholder name"
+msgstr "Введите название жанра"
+
+#: store/forms.py:163
+msgid "Genre with this name already exists"
+msgstr "Жанр с таким названием уже существует"
+
+#: store/forms.py:176
+msgid "Series name"
+msgstr "Название серии"
+
+#: store/forms.py:177
+msgid "Series image"
+msgstr "Изображение серии"
+
+#: store/forms.py:180
+msgid "Series placeholder name"
+msgstr "Введите название серии"
+
+#: store/forms.py:193
+msgid "Series with this name already exists"
+msgstr "Серия с таким название уже существует"
+
+#: store/templates/store/_loader.html:13
+#: store/templates/store/form_template.html:114
 msgid "Preparing upload..."
 msgstr "Подготовка загрузки..."
 
+#: store/templates/store/author_detail.html:15
+msgid "Author books"
+msgstr "Книги автора"
+
+#: store/templates/store/base.html:28 store/views.py:54
+msgid "Books"
+msgstr "Книги"
+
+#: store/templates/store/base.html:30 store/views.py:93
+msgid "Series"
+msgstr "Серии"
+
+#: store/templates/store/base.html:31 store/views.py:110
+msgid "Genres"
+msgstr "Жанры"
+
+#: store/templates/store/base.html:33
+msgid "Chat"
+msgstr "Чат"
+
+#: store/templates/store/base.html:38
+msgid "Hello"
+msgstr "Привет"
+
+#: store/templates/store/base.html:39
+msgid "Logout"
+msgstr "Выйти"
+
+#: store/templates/store/base.html:41
+msgid "Login"
+msgstr "Войти"
+
+#: store/templates/store/base.html:42
+msgid "Register"
+msgstr "Зарегистрироваться"
+
+#: store/templates/store/book_detail.html:71
+msgid "Book download all"
+msgstr "Скачать все"
+
+#: store/templates/store/book_detail.html:78
+msgid "Book not support audio"
+msgstr "Ваш браузер не поддерживает аудиоплеер"
+
+#: store/templates/store/book_detail.html:81
+msgid "Book download"
+msgstr "Скачать"
+
+#: store/templates/store/book_detail.html:87
+msgid "Book confirm remove message"
+msgstr "Вы уверены, что хотите удалить эту книгу?"
+
+#: store/templates/store/book_detail.html:94
+msgid "Book remove"
+msgstr "Удалить книгу"
+
+#: store/templates/store/chat.html:13
+msgid "Library chat"
+msgstr "Чат библиотеки"
+
+#: store/templates/store/chat.html:15
+msgid "Ask about the local catalog and compare it with web sources."
+msgstr ""
+"Задавайте вопросы о локальном каталоге и сравнивайте его с интернет-"
+"источниками."
+
+#: store/templates/store/chat.html:19
+msgid "Clear"
+msgstr "Очистить"
+
+#: store/templates/store/chat.html:27
+msgid "Checking the local catalog…"
+msgstr "Проверяю локальный каталог…"
+
+#: store/templates/store/chat.html:28
+msgid "Chat request failed."
+msgstr "Не удалось выполнить запрос чата."
+
+#: store/templates/store/chat.html:29
+msgid "The chat was cleared. Ask a new question."
+msgstr "Чат очищен. Задайте новый вопрос."
+
+#: store/templates/store/chat.html:31
+msgid "Message"
+msgstr "Сообщение"
+
+#: store/templates/store/chat.html:33
+msgid "Type your question…"
+msgstr "Введите вопрос…"
+
+#: store/templates/store/chat.html:35
+msgid "Send"
+msgstr "Отправить"
+
+#: store/templates/store/form_template.html:45
+#: store/templates/store/form_template.html:112
+msgid "Form add image"
+msgstr "Перетащите фото сюда или нажмите для выбора"
+
+#: store/templates/store/form_template.html:49
+msgid "Form clear image"
+msgstr "Очистить"
+
+#: store/templates/store/form_template.html:66
+#: store/templates/store/form_template.html:90
+msgid "Form cancel"
+msgstr "Отмена"
+
+#: store/templates/store/form_template.html:69
+#: store/templates/store/form_template.html:93
+msgid "Form remove"
+msgstr "Удалить"
+
+#: store/templates/store/form_template.html:73
+msgid "Form save"
+msgstr "Сохранить изменения"
+
+#: store/templates/store/form_template.html:83
+msgid "Form confirm remove"
+msgstr "Подтверждение удаления"
+
+#: store/templates/store/form_template.html:87
+msgid "Form confirm remove question"
+msgstr "Вы уверены, что хотите удалить"
+
+#: store/templates/store/form_template.html:87
+msgid "Form confirm remove message"
+msgstr "Это действие нельзя отменить"
+
+#: store/templates/store/form_template.html:113
+msgid "Form invalid format"
+msgstr "Неверный формат файла"
+
+#: store/templates/store/form_template.html:115
 msgid "Uploading..."
 msgstr "Загрузка..."
 
+#: store/templates/store/form_template.html:116
 msgid "Processing..."
 msgstr "Обработка..."
 
+#: store/templates/store/form_template.html:117
 msgid "Upload error. Please try again."
 msgstr "Ошибка загрузки. Пожалуйста, попробуйте снова."
 
+#: store/templates/store/form_template.html:118
 msgid "Upload cancelled."
 msgstr "Загрузка отменена."
+
+#: store/templates/store/form_template.html:119
+msgid "Retry this file?"
+msgstr ""
+
+#: store/templates/store/genre_detail.html:16
+#: store/templates/store/genre_detail.html:18
+#: store/templates/store/tile_list.html:12
+#: store/templates/store/tile_list.html:14
+msgid "Search"
+msgstr "Поиск"
+
+#: store/templates/store/home.html:5
+msgid "Home welcome"
+msgstr "Добро пожаловать в наш книжный магазин!"
+
+#: store/templates/store/home.html:6
+msgid "Home welcome find"
+msgstr "Здесь вы найдете книги, авторов, жанры и серии."
+
+#: store/templates/store/tile_list.html:21
+msgid "Show only unread books"
+msgstr "Показать только непрочитанные книги"
+
+msgid "Too many chat requests. Please wait a minute and try again."
+msgstr "Слишком много запросов к чату. Подождите минуту и попробуйте снова."
+
+msgid ""
+"Another chat request is already running. Please wait for it to finish."
+msgstr "Другой запрос к чату уже выполняется. Дождитесь его завершения."
+
+msgid ""
+"Some items extracted from the site were omitted because their source links "
+"did not match the web search results."
+msgstr ""
+"Некоторые найденные на сайте элементы пропущены, потому что их ссылки на "
+"источники не совпали с результатами поиска."
+
+#~ msgid ""
+#~ "What should I show: all matching items, only missing items, or a "
+#~ "comparison with the local catalog?"
+#~ msgstr ""
+#~ "Что показать: все найденные элементы, только отсутствующие или сравнение "
+#~ "с локальным каталогом?"
+
+#~ msgid "The local catalog was checked, but web search is unavailable."
+#~ msgstr "Локальный каталог проверен, но поиск в интернете недоступен."
+
+#~ msgid ""
+#~ "The mock assistant received the message and checked the local catalog."
+#~ msgstr "Тестовый помощник получил сообщение и проверил локальный каталог."
+
+#~ msgid "Demonstration web results"
+#~ msgstr "Демонстрационные результаты из интернета"
+
+#~ msgid "Open demonstration link"
+#~ msgstr "Открыть демонстрационную ссылку"
+
+#~ msgid "Example messages"
+#~ msgstr "Примеры сообщений"
+
+#~ msgid "Show books from my local catalog"
+#~ msgstr "Покажи книги из моего локального каталога"
+
+#~ msgid "Clarify what information I want to see"
+#~ msgstr "Уточни, какую информацию я хочу увидеть"
+
+#~ msgid "Clarification"
+#~ msgstr "Уточнение"
+
+#~ msgid "Check https://example.com for matching books"
+#~ msgstr "Проверь подходящие книги на https://example.com"
+
+#~ msgid "Web unavailable"
+#~ msgstr "Внешний сервис недоступен"
+
+#~ msgid "Partial result"
+#~ msgstr "Неполный результат"
+
+#~ msgid "Save success"
+#~ msgstr "успешно сохранён"
+
+#~ msgid "Save with error"
+#~ msgstr "Ошибка при сохранении"

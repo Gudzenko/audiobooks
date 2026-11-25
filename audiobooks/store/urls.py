@@ -1,8 +1,11 @@
 from django.urls import path
 from . import audio_views, catalog_api_views, edit_views, views
+from .chat import views as chat_views
 
 urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
+    path('chat/', chat_views.ChatPageView.as_view(), name='chat'),
+    path('chat/message/', chat_views.ChatMessageView.as_view(), name='chat_message'),
     path('books/', views.BookListView.as_view(), name='book_list'),
     path('books/<slug:slug>/', views.BookDetailView.as_view(), name='book_detail'),
     path('books/<slug:slug>/audio/upload/', audio_views.BookAudioUploadView.as_view(), name='book_audio_upload'),

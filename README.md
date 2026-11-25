@@ -1,12 +1,15 @@
 # audiobooks
 
-Add file .env
-Add dir static in audiobooks
+The application manages a local audiobook catalog and exposes it through the
+web interface, a read-only MCP endpoint and an authenticated chat assistant.
 
-Run dev:
+The legacy development environment that uses host paths can be started with:
+
+```bash
 docker compose -f docker-compose.dev.yaml up --build
+```
 
-Run isolated local development environment:
+For normal development, use the isolated local environment:
 
 ```bash
 docker compose -f docker-compose.local.yaml up --build
@@ -47,15 +50,28 @@ Stop it without deleting the test database:
 docker compose -f docker-compose.local.yaml down
 ```
 
-Run the browser test for sequential audio uploads:
+Run all browser tests:
 
 ```bash
+docker compose -f docker-compose.local.yaml --profile browser-tests \
+  up -d --build --force-recreate browser-web
 docker compose -f docker-compose.local.yaml --profile browser-tests \
   run --rm --build browser-tests
 ```
 
-The test uses a dedicated browser-test database, logs in as the seeded local admin,
-uploads two small fixture files, verifies the book page, and removes the book.
+The browser suite uses dedicated `browser_test_database` and
+`browser_test_media` volumes. It does not access the local development or
+production database. The suite checks sequential audio uploads and the chat UI,
+including catalog results, clarification, external-service failure, rich text,
+links and in-memory history. Chat browser tests use mock providers and do not
+spend OpenAI or Exa credits.
+
+Run all Django tests inside the local application container:
+
+```bash
+docker compose -f docker-compose.local.yaml exec -T web \
+  python manage.py test --keepdb
+```
 
 ## Production-like smoke environment
 
@@ -167,67 +183,133 @@ These maintenance tasks are intentionally deferred:
 Cron or a systemd timer can run either command later. The command itself must
 remain usable manually so scheduled execution is only an operational wrapper.
 
-## MCP and chat roadmap
+## MCP and chat
 
 The MCP endpoint remains part of the Django ASGI application and uses the same
 catalog services and user accounts. It should not become a separate service at
 this stage.
 
-1. Stabilize the read-only MCP contract. Keep a small set of composable tools
-   for catalog discovery, multi-criteria book search, item details, summaries
-   and suggestions. Add contract tests for pagination, sorting, exact and fuzzy
-   matching, empty results and permissions.
-2. Add a provider-neutral chat layer inside Django. The chat orchestration and
-   conversation history must be independent of a particular AI provider. A
-   provider adapter supplies text generation, while catalog access goes through
-   the same MCP tools or underlying application services.
-3. Build the first in-application chat as a read-only assistant. Start with
-   questions that can be answered entirely from the local catalog: finding and
-   comparing books, authors, genres and series, and explaining search results.
-4. Add external catalog comparison only as a separate integration. Questions
-   such as “which works by this author are missing” require an authoritative
-   external list; the local database alone cannot determine that reliably.
-5. Add write-capable MCP tools later. Separate read and write permissions,
-   validate every input, record an audit trail and require explicit confirmation
-   for destructive operations. Keep write tools disabled by default.
-6. Add operational limits and diagnostics: request timeouts, result limits,
-   structured logs, tool-call metrics and end-to-end tests through the chat UI.
+### Architecture
 
-The recommended next increment is step 1 only: review the current MCP schemas
-against real catalog questions, close gaps in read-only tools and freeze their
-input/output contracts before implementing the chat interface.
+Authenticated users can open `/store/chat/`. The chat calls the real
+read-only `search_books` MCP tool through FastMCP's in-memory transport, so it
+does not make an HTTP request back to the application. Chat-model and web-search
+providers are selected independently through environment variables. Mock
+providers remain the default, so development and tests never spend API credits.
 
-Create super user
+The orchestration layer does not depend directly on OpenAI or Exa. Provider
+protocols define planning, answer generation, list extraction, title matching
+and web search. The current adapters are:
+
+- `mock` for deterministic local development and automated tests;
+- `openai` for query planning, structured extraction, title matching and final
+  answers;
+- `exa` for web search and retrieval of relevant public pages.
+
+The chat can search the local catalog, search public web sources, inspect a
+public site named in the question, and compare external titles with local book
+cards. Title matching may use translated names, alternative names and
+transliteration. External links are shown as sources; the application does not
+download books or authenticate on third-party sites.
+
+Conversation history exists only in the browser's JavaScript memory. Reloading
+or closing the page clears it; no messages are stored in the database, Django
+session, cookies or local storage. The message endpoint requires the existing
+Django login and CSRF protection.
+
+To test the real OpenAI and Exa adapters locally, create an ignored `.env` file
+next to `docker-compose.local.yaml` using `.env.example` as a reference:
+
+```dotenv
+CHAT_MODEL_PROVIDER=openai
+WEB_SEARCH_PROVIDER=exa
+OPENAI_API_KEY=replace-with-your-key
+OPENAI_MODEL=gpt-6-luna
+EXA_API_KEY=replace-with-your-key
+```
+
+Then rebuild the local container. Never add real keys to Compose files, source
+code, browser JavaScript, logs or Git. OpenAI creates the tool plan and final
+answer; Exa supplies external search results. Either adapter can be replaced by
+implementing the corresponding provider protocol. If Exa is unavailable, the
+chat returns a clearly marked partial answer based on the local catalog.
+
+Search limits are controlled separately: `CHAT_WEB_RESULT_LIMIT` is used for
+ordinary searches and `CHAT_SITE_RESULT_LIMIT` for inventory-style searches on
+a named site. `CHAT_CATALOG_RESULT_LIMIT` limits the total number of local books
+returned to one chat request. `CHAT_WEB_CONTENT_MAX_CHARS` limits full text
+loaded from each external page, while `CHAT_WEB_CONTENT_TOTAL_MAX_CHARS` limits
+the combined text sent for list extraction. `CHAT_PROVIDER_TIMEOUT` limits
+provider calls. `CHAT_REQUESTS_PER_MINUTE` limits paid requests per
+authenticated user. A file lock prevents concurrent requests from the same
+user for the full request lifetime. Rate-limit state contains counters only and is stored in
+`CHAT_RATE_LIMIT_DIR`; it contains no message text. A result may still be
+incomplete when the public source is incomplete, unavailable, blocked or not
+fully indexed; the response must report that limitation instead of claiming
+that the list is exhaustive.
+
+OpenAI output is also bounded separately for planning, clarification, ordinary
+answers, list extraction and title matching through the corresponding
+`CHAT_*_MAX_OUTPUT_TOKENS` settings. These limits include visible output and
+model reasoning tokens.
+
+### Current boundaries
+
+- The chat and MCP catalog tools are read-only.
+- Conversation history exists only until the page is reloaded or cleared.
+- Local comparison is based on book cards and available metadata; the contents
+  of a collection cannot be inferred when they are absent from the catalog.
+- External sources are public pages only. Links must still be reviewed by the
+  user before relying on them.
+- Write-capable MCP tools, audit logging, confirmations for destructive actions,
+  provider metrics and scheduled maintenance remain future work.
+
+## Development commands
+
+Create a superuser outside Docker:
+
+```bash
 cd audiobooks
-python .\manage.py createsuperuser
+python manage.py createsuperuser
+```
 
-Generate translateion files
-in docker container
+Compile translation files inside the application container:
+
+```bash
 python manage.py compilemessages
+```
 
-# Problems
+## Troubleshooting
 
-1. Full Disk (No Space Left)
+### No space left on device
 
 Check disk usage:
 
+```bash
 df -h
+```
 
 If using Docker:
 
+```bash
 docker system df
 docker system prune -a
+```
 
 Verify space:
 
+```bash
 df -h
+```
 
-2. External Drive Mounted with New Name
+### External drive mounted with a new name
 
 When the drive mounts as ADATA_HM9001 instead of ADATA_HM900:
 
+```bash
 sudo umount /media/pi/ADATA_HM9001
 sudo rm -rf /media/pi/ADATA_HM900
+```
 
 Unplug and reconnect the drive.
 It should now mount as /media/pi/ADATA_HM900
